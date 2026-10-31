@@ -1,0 +1,21 @@
+<%- include('partials/head') %>
+    <h1>Página de Registro</h1>
+
+    <form action="/signup" method="POST">
+        <div>
+            <label for="usernameElementID">Nombre</label>
+            <input name="username" id="usernameElementID" value="nombre" />
+        </div>
+        <div>
+            <label for="emailElementID">Email:</label>
+            <input type="text" name="email" id="emailElementID">
+        </div>
+        <div>
+            <label for="passwordElementID">Clave</label>
+            <input type="password" name="password" id="passwordElementID" />
+        </div>
+        <div>
+            <button type="submit">Send my greetings</button>
+        </div>
+    </form>
+<%- include('partials/foot') %>

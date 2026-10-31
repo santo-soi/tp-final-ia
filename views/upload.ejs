@@ -1,0 +1,19 @@
+<%- include('partials/head') %>
+    <h1>Subida de archivos</h1>
+
+    <form action="/user/upload" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="datosID">Archivos de imagen</label>
+            <input type="file" name="userFiles" id="datosID" accept="image/png, image/jpeg" multiple required>
+        </div>
+        <div>
+            <label for="descID">Descripción</label>
+            <input type="text" name="descImg" id="descID" required>
+        </div>
+        <div>
+            <input type="submit" name="submit">
+        </div>
+    </form>
+
+<%- include('partials/galeria') %>
+<%- include('partials/foot') %>
