@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-marfil text-tinta font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+  }
+
+  ::selection {
+    @apply bg-tinta text-marfil;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-tinta px-6 py-3 text-xs font-medium uppercase tracking-[0.18em] transition-colors duration-200 hover:bg-tinta hover:text-marfil focus:outline-none focus-visible:ring-2 focus-visible:ring-tinta focus-visible:ring-offset-2 focus-visible:ring-offset-marfil;
+  }
+
+  .btn-solid {
+    @apply bg-tinta text-marfil hover:bg-transparent hover:text-tinta;
+  }
+
+  .btn-ghost {
+    @apply border-transparent text-gris hover:border-linea hover:bg-transparent hover:text-tinta;
+  }
+
+  .card {
+    @apply rounded-3xl border border-linea bg-white/70 p-6 shadow-suave backdrop-blur-sm;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-linea bg-white px-4 py-3 text-sm text-tinta placeholder:text-gris/60 focus:border-tinta focus:outline-none focus:ring-1 focus:ring-tinta;
+  }
+
+  .label {
+    @apply mb-2 block text-[11px] font-semibold uppercase tracking-[0.2em] text-gris;
+  }
+
+  .nav-link {
+    @apply text-xs font-medium uppercase tracking-[0.18em] text-gris transition-colors hover:text-tinta;
+  }
+
+  .nav-link-active {
+    @apply text-tinta;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-gris;
+  }
+
+  .link-underline {
+    @apply underline decoration-linea decoration-1 underline-offset-4 transition-colors hover:decoration-tinta;
+  }
+
+  .color-swatch {
+    @apply relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 border-transparent transition-transform hover:scale-110;
+  }
+
+  .color-swatch input {
+    @apply absolute inset-0 cursor-pointer opacity-0;
+  }
+
+  .color-swatch span {
+    @apply h-7 w-7 rounded-full border border-black/10;
+  }
+
+  .color-swatch input:checked + span {
+    @apply ring-2 ring-tinta ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer utilities {
+  .fondo-ola {
+    background-image:
+      radial-gradient(ellipse at 18% 12%, rgba(17, 17, 17, 0.07), transparent 55%),
+      radial-gradient(ellipse at 82% 28%, rgba(17, 17, 17, 0.05), transparent 50%),
+      repeating-radial-gradient(circle at 50% 120%, transparent 0 38px, rgba(17, 17, 17, 0.08) 39px 40px);
+  }
+}

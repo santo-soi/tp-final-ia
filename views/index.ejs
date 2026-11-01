@@ -1,5 +1,80 @@
 <%- include('partials/head') %>
-    <h1>Página principal</h1>
-    <p>Párrafo principal.</p>
-<%- include('partials/list') %>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main id="contenido">
+    <section class="relative isolate overflow-hidden border-b border-linea">
+        <div class="fondo-ola absolute inset-0 opacity-80"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-marfil/10 via-marfil/50 to-marfil"></div>
+
+        <div class="relative mx-auto flex min-h-[80vh] max-w-6xl flex-col justify-center px-6 py-24">
+            <p class="eyebrow">Un sitio colaborativo</p>
+            <h1 class="mt-6 max-w-4xl font-display text-6xl leading-[0.92] tracking-tight md:text-8xl">
+                Un océano<br>
+                <span class="italic">hecho de voces.</span>
+            </h1>
+            <p class="mt-8 max-w-xl text-base leading-relaxed text-gris md:text-lg">
+                Cada persona que participa deja una frase, una foto y un color. Con eso, un cardumen de peces geométricos se mueve, se enciende y cuenta historias. La obra se construye entre todes.
+            </p>
+
+            <div class="mt-10 flex flex-wrap items-center gap-4">
+                <a href="/obra" class="btn btn-solid">Ver la obra</a>
+
+                <% if (currentUser) { %>
+                    <a href="/user" class="btn">Ir a mi espacio</a>
+                <% } else { %>
+                    <a href="/signup" class="btn">Crear mi cuenta</a>
+                    <a href="/login" class="btn btn-ghost">Ya tengo cuenta</a>
+                <% } %>
+            </div>
+
+            <div class="mt-16 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-gris">
+                <span class="h-px w-10 bg-linea"></span>
+                <span>Un pez por persona registrada</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-20">
+        <div class="grid gap-10 md:grid-cols-3">
+            <article>
+                <p class="eyebrow">01 · Registrate</p>
+                <h2 class="mt-3 text-2xl">Creá tu cuenta</h2>
+                <p class="mt-3 text-sm leading-relaxed text-gris">
+                    Un usuario, una contraseña y un mail. Con eso ya podés entrar a tu espacio y participar del océano.
+                </p>
+            </article>
+
+            <article>
+                <p class="eyebrow">02 · Cargá tu voz</p>
+                <h2 class="mt-3 text-2xl">Elegí tu frase y tu color</h2>
+                <p class="mt-3 text-sm leading-relaxed text-gris">
+                    Subí una foto, escribí una frase de hasta 180 caracteres y elegí el color con el que se va a pintar tu pez.
+                </p>
+            </article>
+
+            <article>
+                <p class="eyebrow">03 · Mirá la obra</p>
+                <h2 class="mt-3 text-2xl">Encontrala en el cardumen</h2>
+                <p class="mt-3 text-sm leading-relaxed text-gris">
+                    Cada 10 segundos un pez se ilumina y muestra la voz de su usuario. Podés clickearlo para leerla con calma.
+                </p>
+            </article>
+        </div>
+    </section>
+
+    <section class="border-y border-linea bg-white/40">
+        <div class="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 md:flex-row md:items-end md:justify-between">
+            <div>
+                <p class="eyebrow">La obra</p>
+                <h2 class="mt-3 max-w-2xl text-3xl leading-tight md:text-4xl">
+                    Un pez por cada persona registrada.<br>
+                    <span class="italic">Una frase por cada voz.</span>
+                </h2>
+            </div>
+            <a href="/obra" class="btn">Entrar al océano</a>
+        </div>
+    </section>
+</main>
+
 <%- include('partials/foot') %>

@@ -1,0 +1,23 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main id="contenido" class="mx-auto flex min-h-[65vh] max-w-6xl flex-col justify-center px-6 py-16">
+    <p class="eyebrow">Error 500</p>
+    <h1 class="mt-4 max-w-3xl text-5xl leading-tight md:text-7xl">
+        Algo se enredó<br>
+        <span class="italic">en la corriente.</span>
+    </h1>
+    <p class="mt-6 max-w-xl text-sm leading-relaxed text-gris">
+        Hubo un problema en el servidor. Podés volver al inicio e intentar de nuevo en unos segundos.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+        <a href="<%= currentUser ? '/user' : '/' %>" class="btn btn-solid">
+            <%= currentUser ? 'Volver a mi espacio' : 'Volver al inicio' %>
+        </a>
+        <a href="/obra" class="btn">Ver la obra</a>
+    </div>
+</main>
+
+<%- include('partials/foot') %>

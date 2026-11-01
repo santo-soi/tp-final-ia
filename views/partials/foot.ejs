@@ -1,8 +1,37 @@
-    <footer>
-       <p>
-            Autor/a: Mi Nombre<br>
-            <a href="mailto:usuarie@email.com">Email de contacto</a>
-       </p>
-    </footer>
+<footer class="mt-24 border-t border-linea">
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-[1.3fr_1fr_1fr]">
+        <div>
+            <p class="font-display text-2xl">Océano de Voces</p>
+            <p class="mt-3 max-w-sm text-sm leading-relaxed text-gris">Un cardumen colaborativo hecho de las frases de sus usuarios. Cada voz enciende un pez.</p>
+        </div>
+
+        <div>
+            <p class="eyebrow">Navegar</p>
+            <ul class="mt-4 space-y-2 text-sm text-gris">
+                <li><a href="/" class="link-underline">Inicio</a></li>
+                <li><a href="/obra" class="link-underline">La obra</a></li>
+                <li><a href="/about" class="link-underline">El proyecto</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <p class="eyebrow">Participar</p>
+            <ul class="mt-4 space-y-2 text-sm text-gris">
+                <% if (currentUser) { %>
+                    <li><a href="/user" class="link-underline">Mi espacio</a></li>
+                    <li><a href="/user/upload" class="link-underline">Mi voz</a></li>
+                    <li><a href="/user/profile" class="link-underline">Mi perfil</a></li>
+                <% } else { %>
+                    <li><a href="/signup" class="link-underline">Crear cuenta</a></li>
+                    <li><a href="/login" class="link-underline">Ingresar</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+
+    <div class="border-t border-linea/70 px-6 py-5">
+        <p class="mx-auto max-w-6xl text-xs text-gris">Proyecto colaborativo · Trabajo práctico · 2026</p>
+    </div>
+</footer>
 </body>
 </html>

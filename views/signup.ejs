@@ -1,21 +1,53 @@
 <%- include('partials/head') %>
-    <h1>Página de Registro</h1>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
 
-    <form action="/signup" method="POST">
+<main id="contenido" class="mx-auto flex min-h-[70vh] max-w-6xl items-center px-6 py-16">
+    <div class="grid w-full gap-12 md:grid-cols-2 md:items-center">
         <div>
-            <label for="usernameElementID">Nombre</label>
-            <input name="username" id="usernameElementID" value="nombre" />
+            <p class="eyebrow">Registrarme</p>
+            <h1 class="mt-4 text-5xl leading-tight md:text-6xl">
+                Entrá al<br>
+                <span class="italic">océano.</span>
+            </h1>
+            <p class="mt-6 max-w-md text-sm leading-relaxed text-gris">
+                Creá tu cuenta para tener tu propio pez. Después vas a poder elegir tu foto, tu frase y el color con el que se ilumina en la obra.
+            </p>
         </div>
-        <div>
-            <label for="emailElementID">Email:</label>
-            <input type="text" name="email" id="emailElementID">
+
+        <div class="card">
+            <form action="/signup" method="POST" class="space-y-5">
+                <div>
+                    <label for="username" class="label">Usuario</label>
+                    <input id="username" name="username" type="text" class="input" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" required>
+                    <p class="mt-2 text-xs text-gris">Entre 3 y 20 caracteres: letras, números o guión bajo. Después lo podés cambiar desde tu perfil.</p>
+                </div>
+
+                <div>
+                    <label for="email" class="label">Correo electrónico</label>
+                    <input id="email" name="email" type="email" class="input" autocomplete="email" required>
+                </div>
+
+                <div>
+                    <label for="password" class="label">Contraseña</label>
+                    <input id="password" name="password" type="password" class="input" autocomplete="new-password" minlength="8" required>
+                    <p class="mt-2 text-xs text-gris">Mínimo 8 caracteres.</p>
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="label">Repetir contraseña</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" class="input" autocomplete="new-password" minlength="8" required>
+                </div>
+
+                <button type="submit" class="btn btn-solid w-full">Crear mi cuenta</button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-gris">
+                ¿Ya tenés cuenta?
+                <a href="/login" class="link-underline text-tinta">Ingresá</a>
+            </p>
         </div>
-        <div>
-            <label for="passwordElementID">Clave</label>
-            <input type="password" name="password" id="passwordElementID" />
-        </div>
-        <div>
-            <button type="submit">Send my greetings</button>
-        </div>
-    </form>
+    </div>
+</main>
+
 <%- include('partials/foot') %>

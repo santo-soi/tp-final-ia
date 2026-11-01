@@ -1,0 +1,38 @@
+<header class="sticky top-0 z-40 border-b border-linea/70 bg-marfil/85 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+        <a href="<%= currentUser ? '/user' : '/' %>" class="flex items-center gap-3">
+            <span class="flex h-8 w-8 items-center justify-center rounded-full border border-tinta">
+                <span class="block h-3 w-3 rounded-full bg-tinta"></span>
+            </span>
+            <span class="font-display text-xl tracking-tight">Océano de Voces</span>
+        </a>
+
+        <nav class="hidden items-center gap-6 md:flex">
+            <a href="/obra" class="nav-link <%= currentPath.startsWith('/obra') ? 'nav-link-active' : '' %>">La obra</a>
+            <a href="/about" class="nav-link <%= currentPath.startsWith('/about') ? 'nav-link-active' : '' %>">El proyecto</a>
+
+            <% if (currentUser) { %>
+                <a href="/user" class="nav-link <%= currentPath === '/user' ? 'nav-link-active' : '' %>">Mi espacio</a>
+                <a href="/user/upload" class="nav-link <%= currentPath.startsWith('/user/upload') ? 'nav-link-active' : '' %>">Mi voz</a>
+                <a href="/user/profile" class="nav-link <%= currentPath.startsWith('/user/profile') ? 'nav-link-active' : '' %>">Perfil</a>
+                <a href="/user/logout" class="btn btn-ghost !px-4 !py-2">Salir</a>
+            <% } else { %>
+                <a href="/login" class="nav-link <%= currentPath.startsWith('/login') ? 'nav-link-active' : '' %>">Ingresar</a>
+                <a href="/signup" class="btn !px-5 !py-2">Registrarme</a>
+            <% } %>
+        </nav>
+
+        <nav class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 md:hidden">
+            <a href="/obra" class="nav-link">Obra</a>
+            <% if (currentUser) { %>
+                <a href="/user" class="nav-link">Mi espacio</a>
+                <a href="/user/upload" class="nav-link">Mi voz</a>
+                <a href="/user/profile" class="nav-link">Perfil</a>
+                <a href="/user/logout" class="nav-link">Salir</a>
+            <% } else { %>
+                <a href="/login" class="nav-link">Ingresar</a>
+                <a href="/signup" class="nav-link">Registro</a>
+            <% } %>
+        </nav>
+    </div>
+</header>

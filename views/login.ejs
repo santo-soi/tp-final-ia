@@ -1,18 +1,41 @@
 <%- include('partials/head') %>
-    <h1>Página de logueo</h1>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
 
-    <!-- Formulario para enviar el método POST de HTTP -->
-    <form action="/login" method="POST">
+<main id="contenido" class="mx-auto flex min-h-[70vh] max-w-6xl items-center px-6 py-16">
+    <div class="grid w-full gap-12 md:grid-cols-2 md:items-center">
         <div>
-            <label for="usernameElementID">Nombre</label>
-            <input name="username" id="usernameElementID" value="nombre" />
+            <p class="eyebrow">Ingresar</p>
+            <h1 class="mt-4 text-5xl leading-tight md:text-6xl">
+                Volvé a tu<br>
+                <span class="italic">cardumen.</span>
+            </h1>
+            <p class="mt-6 max-w-md text-sm leading-relaxed text-gris">
+                Tu pez te espera. Si todavía no tenés cuenta, podés crearla en un minuto y empezar a participar de la obra.
+            </p>
         </div>
-        <div>
-            <label for="passwordElementID">Clave</label>
-            <input name="password" id="passwordElementID" value="clave" />
+
+        <div class="card">
+            <form action="/login" method="POST" class="space-y-5">
+                <div>
+                    <label for="username" class="label">Usuario</label>
+                    <input id="username" name="username" type="text" class="input" autocomplete="username" required>
+                </div>
+
+                <div>
+                    <label for="password" class="label">Contraseña</label>
+                    <input id="password" name="password" type="password" class="input" autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="btn btn-solid w-full">Ingresar</button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-gris">
+                ¿No tenés cuenta?
+                <a href="/signup" class="link-underline text-tinta">Registrate</a>
+            </p>
         </div>
-        <div>
-            <button type="submit">Send my greetings</button>
-        </div>
-    </form>
+    </div>
+</main>
+
 <%- include('partials/foot') %>

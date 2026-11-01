@@ -4,6 +4,9 @@ const db = require('../database/db.js');
 
 const router = express.Router();
 
+const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
 /**
  * En app.js se insertan estas rutas en '/'
@@ -12,14 +15,14 @@ const router = express.Router();
  * app.use("/", indexRouter);
  *
  * En este caso, las rutas de este archivo son
- * relativas a la ruta raíz, ver el caso de users.js
+ * relativas a la ruta raíz, ver el caso de user.js
  * que es distinto.
  */
 
 
 router.get('/', (req, res, next) => {
     // Página principal del sitio.
-    res.render('index', { pageTitle: 'Página principal' });
+    res.render('index', { pageTitle: 'Inicio' });
 });
 
 
@@ -29,7 +32,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/about', (req, res, next) => {
     // Información sobre el sitio.
-    res.render('about', { pageTitle: 'About' });
+    res.render('about', { pageTitle: 'El proyecto' });
 });
 
 
@@ -40,7 +43,7 @@ router.get('/about', (req, res, next) => {
  */
 function notlogged(req, res, next) {
     // Si el usuario no está logueado, continúa.
-    if(!req.session.user) {
+    if (!req.session.user) {
         next();
     } else {
         res.redirect('/user');
@@ -58,18 +61,45 @@ router.get('/signup', notlogged, (req, res, next) => {
 });
 
 router.post('/signup', notlogged, (req, res, next) => {
-    const { username, email, password } = req.body;
-    console.log("*** datos username, email, password:", username, email, password);
+    const {
+        username = '',
+        email = '',
+        password = '',
+        confirmPassword = '',
+    } = req.body;
 
-    if(db.userExists(username)) {
-        res.send('Error: El nombre de usuario ya existe');
-        return
+    const cleanUsername = username.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!USERNAME_REGEX.test(cleanUsername)) {
+        req.session.error = 'El usuario debe tener entre 3 y 20 caracteres: letras, números o guión bajo.';
+        return res.redirect('/signup');
+    }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+        req.session.error = 'Ingresá un correo electrónico válido.';
+        return res.redirect('/signup');
+    }
+
+    if (password.length < 8) {
+        req.session.error = 'La contraseña debe tener al menos 8 caracteres.';
+        return res.redirect('/signup');
+    }
+
+    if (password !== confirmPassword) {
+        req.session.error = 'Las contraseñas no coinciden.';
+        return res.redirect('/signup');
+    }
+
+    if (db.userExists(cleanUsername)) {
+        req.session.error = 'Ese nombre de usuario ya está en uso.';
+        return res.redirect('/signup');
     }
 
     const hash = bcrypt.hashSync(password, 10);
-    db.addUser(username, email, hash);
+    db.addUser(cleanUsername, cleanEmail, hash);
 
-    // Recibir y procesa los datos del formulario, redirecciona al logueo.
+    req.session.success = 'Tu cuenta fue creada. Ahora podés ingresar.';
     res.redirect('/login');
 });
 
@@ -79,35 +109,31 @@ router.post('/signup', notlogged, (req, res, next) => {
  */
 
 function authenticate(username, password) {
-    if (!db.userExists(username)) return false
+    if (!db.userExists(username)) return false;
+
     const hash = db.getHash(username);
-    const ok = bcrypt.compareSync(password, hash);
-    if (ok) return true
-    else return false
+    return bcrypt.compareSync(password, hash);
 }
 
 router.get('/login', notlogged, (req, res, next) => {
-    res.render('login', { pageTitle: 'Logueo' });
+    res.render('login', { pageTitle: 'Ingresar' });
 });
 
 router.post('/login', notlogged, (req, res, next) => {
-    const { username, password } = req.body;
-    const ok = authenticate(username, password);
-    console.log("*** Username y password", username, password);
+    const { username = '', password = '' } = req.body;
+    const cleanUsername = username.trim();
+    const ok = authenticate(cleanUsername, password);
 
-    if(ok) {
-        req.session.regenerate(() => {
-            req.session.user = username;
-            req.session.success = `Autenticado como ${username}`;
-            res.redirect('/user');
-        });
-    } else {
-        req.session.error = 'La autenticación falló, revise su nombre de usuario y contraseña';
-        res.redirect('/login');
+    if (!ok) {
+        req.session.error = 'Usuario o contraseña incorrectos.';
+        return res.redirect('/login');
     }
 
-    // Log para ver los datos de la base de datos *** BORRAR.
-    db.log();
+    req.session.regenerate(() => {
+        req.session.user = cleanUsername;
+        req.session.success = `Bienvenide, ${cleanUsername}.`;
+        res.redirect('/user');
+    });
 });
 
 
