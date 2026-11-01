@@ -1,0 +1,18 @@
+<%- include('partials/head') %>
+    <h1>Página de logueo</h1>
+
+    <!-- Formulario para enviar el método POST de HTTP -->
+    <form action="/login" method="POST">
+        <div>
+            <label for="usernameElementID">Nombre</label>
+            <input name="username" id="usernameElementID" value="nombre" />
+        </div>
+        <div>
+            <label for="passwordElementID">Clave</label>
+            <input name="password" id="passwordElementID" value="clave" />
+        </div>
+        <div>
+            <button type="submit">Send my greetings</button>
+        </div>
+    </form>
+<%- include('partials/foot') %>
