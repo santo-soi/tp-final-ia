@@ -1,3 +1,67 @@
 <%- include('partials/head') %>
-    <h1>Página Principal de Usuario/a</h1>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main id="contenido">
+    <section class="relative isolate overflow-hidden border-b border-linea">
+        <div class="fondo-ola absolute inset-0 opacity-80"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-marfil/10 via-marfil/50 to-marfil"></div>
+
+        <div class="relative mx-auto flex min-h-[58vh] max-w-6xl flex-col justify-center px-6 py-20">
+            <p class="eyebrow">Mi espacio</p>
+            <h1 class="mt-6 text-5xl leading-[0.95] tracking-tight md:text-7xl">
+                Hola, <span class="italic"><%= currentUser.username %></span>.
+            </h1>
+            <p class="mt-6 max-w-xl text-base leading-relaxed text-gris md:text-lg">
+                Este es tu rincón del océano. Desde acá podés administrar tu perfil, cargar tu voz y volver a la obra cuando quieras.
+            </p>
+
+            <div class="mt-8 flex flex-wrap items-center gap-3">
+                <a href="/user/upload" class="btn btn-solid">
+                    <%= currentUser.tieneVoz ? 'Editar mi voz' : 'Cargar mi voz' %>
+                </a>
+                <a href="/user/profile" class="btn">Mi perfil</a>
+                <a href="/obra" class="btn btn-ghost">Ir a la obra</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-12">
+        <div class="grid gap-6 md:grid-cols-3">
+            <a href="/user/profile" class="card group transition duration-200 hover:-translate-y-1">
+                <p class="eyebrow">01</p>
+                <h2 class="mt-4 text-2xl">Mi perfil</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gris">Revisá y actualizá tu usuario y tu mail.</p>
+                <span class="mt-6 inline-block text-xs uppercase tracking-[0.18em] group-hover:underline">Abrir perfil →</span>
+            </a>
+
+            <a href="/user/upload" class="card group transition duration-200 hover:-translate-y-1">
+                <p class="eyebrow">02</p>
+                <h2 class="mt-4 text-2xl">Mi voz</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gris">Elegí tu foto, tu frase y el color de tu pez.</p>
+                <span class="mt-6 inline-block text-xs uppercase tracking-[0.18em] group-hover:underline">
+                    <%= currentUser.tieneVoz ? 'Editar mi voz' : 'Cargar mi voz' %> →
+                </span>
+            </a>
+
+            <a href="/obra" class="card group transition duration-200 hover:-translate-y-1">
+                <p class="eyebrow">03</p>
+                <h2 class="mt-4 text-2xl">La obra</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gris">Mirá el cardumen y encontrá las voces de la comunidad.</p>
+                <span class="mt-6 inline-block text-xs uppercase tracking-[0.18em] group-hover:underline">Entrar al océano →</span>
+            </a>
+        </div>
+
+        <% if (!currentUser.tieneVoz) { %>
+            <div class="mt-10 flex flex-col gap-5 rounded-3xl bg-tinta px-6 py-6 text-marfil md:flex-row md:items-center md:justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-marfil/60">Tu pez todavía está en blanco</p>
+                    <p class="mt-2 font-display text-2xl">Cargá tu voz para que el océano lo ilumine.</p>
+                </div>
+                <a href="/user/upload" class="btn border-marfil text-marfil hover:bg-marfil hover:text-tinta">Cargar mi voz</a>
+            </div>
+        <% } %>
+    </section>
+</main>
+
 <%- include('partials/foot') %>

@@ -1,3 +1,88 @@
 <%- include('partials/head') %>
-    <h1>Página con los datos de usuario/a</h1>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main id="contenido" class="mx-auto max-w-6xl px-6 py-16">
+    <div class="flex flex-col gap-4 border-b border-linea pb-8 md:flex-row md:items-end md:justify-between">
+        <div>
+            <p class="eyebrow">Mi perfil</p>
+            <h1 class="mt-3 text-5xl leading-tight md:text-6xl">Tus datos.</h1>
+        </div>
+        <a href="/user" class="btn btn-ghost">← Volver a mi espacio</a>
+    </div>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <section class="card">
+            <h2 class="text-2xl">Cuenta</h2>
+            <p class="mt-2 text-sm leading-relaxed text-gris">
+                Tu nombre de usuario es el que se ve en la obra. Podés cambiarlo cuando quieras.
+            </p>
+
+            <form action="/user/profile" method="POST" class="mt-6 space-y-5">
+                <div>
+                    <label for="username" class="label">Nombre de usuario</label>
+                    <input id="username" name="username" type="text" class="input" value="<%= currentUser.username %>" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" required>
+                    <p class="mt-2 text-xs text-gris">Entre 3 y 20 caracteres: letras, números o guión bajo.</p>
+                </div>
+
+                <div>
+                    <label for="email" class="label">Correo electrónico</label>
+                    <input id="email" name="email" type="email" class="input" value="<%= currentUser.email %>" required>
+                </div>
+
+                <button type="submit" class="btn btn-solid">Guardar cambios</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2 class="text-2xl">Mi voz</h2>
+
+            <% if (currentUser.tieneVoz) { %>
+                <div class="mt-6 space-y-5">
+                    <div class="flex items-center gap-4">
+                        <% if (currentUser.foto) { %>
+                            <img src="/uploads/<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea object-cover">
+                        <% } else { %>
+                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea bg-marfil font-display text-xl">
+                                <%= currentUser.username.charAt(0).toUpperCase() %>
+                            </span>
+                        <% } %>
+
+                        <div>
+                            <p class="text-sm font-medium">Pez pintado</p>
+                            <p class="flex items-center gap-2 text-xs text-gris">
+                                <span class="inline-block h-3 w-3 rounded-full border border-black/10" style="background-color: <%= currentUser.color %>"></span>
+                                <%= currentUser.color %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="rounded-2xl bg-marfil px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
+
+                    <p class="text-xs text-gris">
+                        <%= currentUser.mostrarEmail ? 'Tu mail se muestra en la obra.' : 'Tu mail está oculto en la obra.' %>
+                    </p>
+
+                    <div class="flex flex-wrap gap-3">
+                        <a href="/user/upload" class="btn">Editar mi voz</a>
+                        <form action="/user/profile/delete-voz" method="POST" onsubmit="return confirm('¿Querés borrar tu voz? Tu pez volverá a quedar blanco.');">
+                            <button type="submit" class="btn btn-ghost">Borrar mi voz</button>
+                        </form>
+                    </div>
+                </div>
+            <% } else { %>
+                <p class="mt-4 text-sm leading-relaxed text-gris">
+                    Todavía no cargaste tu frase ni elegiste el color de tu pez. Tu pez nada en blanco y no participa del ciclo de la obra.
+                </p>
+                <a href="/user/upload" class="btn btn-solid mt-6">Cargar mi voz</a>
+            <% } %>
+        </section>
+    </div>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+        <a href="/obra" class="btn">Ver la obra</a>
+        <a href="/user/logout" class="btn btn-ghost">Cerrar sesión</a>
+    </div>
+</main>
+
 <%- include('partials/foot') %>

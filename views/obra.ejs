@@ -1,8 +1,67 @@
-<%- include('partials/headObra') %>
-    <h1>Mi sketch</h1>
-    <!--
-    Dentro de esta etiqueta, a la que nos vamos a referir mediante el
-    nombre que le asignamos a id, vamos a posicionar nuestro sketch.
-    -->
-    <div id='contenedor-canvas-p5'></div>
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+
+<main id="contenido">
+    <section class="relative isolate overflow-hidden border-b border-linea">
+        <div class="fondo-ola absolute inset-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white/10 via-marfil/40 to-marfil"></div>
+
+        <div class="relative mx-auto flex min-h-[72vh] max-w-6xl flex-col items-center justify-center px-6 py-24 text-center">
+            <p class="eyebrow">La obra</p>
+            <h1 class="mt-6 max-w-3xl font-display text-5xl leading-[0.95] md:text-7xl">
+                El océano todavía<br>
+                <span class="italic">está tomando forma.</span>
+            </h1>
+            <p class="mt-6 max-w-xl text-sm leading-relaxed text-gris md:text-base">
+                Acá va a vivir el sketch en p5.js: corrientes de ruido de Perlin, un cardumen de peces geométricos y las voces de la comunidad iluminándose cada 10 segundos.
+            </p>
+
+            <div class="mt-10 flex flex-wrap justify-center gap-3">
+                <a href="<%= currentUser ? '/user' : '/' %>" class="btn btn-solid">
+                    <%= currentUser ? 'Volver a mi espacio' : 'Volver al inicio' %>
+                </a>
+
+                <% if (currentUser) { %>
+                    <a href="/user/upload" class="btn">Cargar mi voz</a>
+                <% } else { %>
+                    <a href="/signup" class="btn">Crear mi cuenta</a>
+                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-16">
+        <div class="grid gap-6 md:grid-cols-3">
+            <article class="card">
+                <p class="eyebrow">Fondo</p>
+                <h2 class="mt-3 text-2xl">Corrientes</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gris">Partículas y ruido de Perlin en blanco y negro.</p>
+            </article>
+
+            <article class="card">
+                <p class="eyebrow">Cardumen</p>
+                <h2 class="mt-3 text-2xl">Un pez por persona</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gris">Cada usuario registrado tiene su pez, aunque todavía no haya cargado su voz.</p>
+            </article>
+
+            <article class="card">
+                <p class="eyebrow">Voces</p>
+                <h2 class="mt-3 text-2xl">Cada 10 segundos</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gris">Un pez se pinta con el color de su usuario y muestra su frase en una viñeta.</p>
+            </article>
+        </div>
+
+        <% if (currentUser && !currentUser.tieneVoz) { %>
+            <div class="mt-10 flex flex-col gap-5 rounded-3xl bg-tinta px-6 py-6 text-marfil md:flex-row md:items-center md:justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-marfil/60">Tu pez todavía está en blanco</p>
+                    <p class="mt-2 font-display text-2xl">Cargá tu voz para que el océano lo ilumine.</p>
+                </div>
+                <a href="/user/upload" class="btn border-marfil text-marfil hover:bg-marfil hover:text-tinta">Cargar mi voz</a>
+            </div>
+        <% } %>
+    </section>
+</main>
+
 <%- include('partials/foot') %>
