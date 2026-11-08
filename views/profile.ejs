@@ -41,7 +41,7 @@
                 <div class="mt-6 space-y-5">
                     <div class="flex items-center gap-4">
                         <% if (currentUser.foto) { %>
-                            <img src="/uploads/<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea object-cover">
+                            <img src="<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea object-cover">
                         <% } else { %>
                             <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea bg-marfil font-display text-xl">
                                 <%= currentUser.username.charAt(0).toUpperCase() %>

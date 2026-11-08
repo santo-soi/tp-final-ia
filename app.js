@@ -31,6 +31,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.disable('x-powered-by');
 
+app.use('/uploads', express.static('uploads'));
 
 /**
  * Configuración del middleware.

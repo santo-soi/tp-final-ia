@@ -19,69 +19,78 @@ db.exec(vocesSchema);
 
 
 /**
- * Imprime el contenido de la base de datos.
+ * --- PREPARACIÓN DE CONSULTAS ---
+ * Al compilar las consultas una sola vez a nivel del módulo,
+ * evitamos que el Garbage Collector destruya los objetos en Windows
+ * y logramos que las respuestas de la base de datos sean mucho más rápidas.
  */
+const stmtLog = db.prepare('SELECT rowid, * FROM users');
+const stmtUserExists = db.prepare('SELECT username FROM users WHERE username=?');
+const stmtAddUser = db.prepare('INSERT INTO users VALUES (?, ?, ?)');
+const stmtGetHash = db.prepare('SELECT hash FROM users WHERE username=?');
+const stmtGetUser = db.prepare(`
+    SELECT
+        u.username,
+        u.email,
+        v.frase,
+        v.color,
+        v.foto,
+        v.mostrar_email,
+        v.actualizado_en
+    FROM users u
+    LEFT JOIN voces v ON v.username = u.username
+    WHERE u.username = ?
+`);
+const stmtUpdateUser = db.prepare('UPDATE users SET username = ?, email = ? WHERE username = ?');
+const stmtGetSketchData = db.prepare(`
+    SELECT
+        u.username,
+        u.email,
+        v.frase,
+        v.color,
+        v.foto,
+        v.mostrar_email
+    FROM users u
+    LEFT JOIN voces v ON v.username = u.username
+    ORDER BY u.username COLLATE NOCASE
+`);
+const stmtUpsertVoz = db.prepare(`
+    INSERT INTO voces (username, frase, color, foto, mostrar_email, actualizado_en)
+    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(username) DO UPDATE SET
+        frase = excluded.frase,
+        color = excluded.color,
+        foto = excluded.foto,
+        mostrar_email = excluded.mostrar_email,
+        actualizado_en = CURRENT_TIMESTAMP
+`);
+const stmtDeleteVoz = db.prepare('DELETE FROM voces WHERE username = ?');
+
+
+/**
+ * --- FUNCIONES EXPORTADAS ---
+ */
+
 exports.log = () => {
-    const data = db.prepare('SELECT rowid, * FROM users').all();
+    const data = stmtLog.all();
     console.log(data);
 };
 
-/**
- * Comprueba si el nombre de usuario existe en la base de datos.
- *
- * @param {string} username
- * @returns boolean
- */
 exports.userExists = (username) => {
-    const stmt = db.prepare('SELECT username FROM users WHERE username=?');
-    const value = stmt.get(username);
+    const value = stmtUserExists.get(username);
     return Boolean(value);
 };
 
-/**
- * Agrega un nuevo usuario en la base de datos.
- * ¡El usuario *no* debe existir!
- *
- * @param {string} username
- * @param {string} email
- * @param {string} hash
- */
 exports.addUser = (username, email, hash) => {
-    const stmt = db.prepare('INSERT INTO users VALUES (?, ?, ?)');
-    stmt.run(username, email, hash);
+    stmtAddUser.run(username, email, hash);
 };
 
-/**
- * Devuelve el hash del usuario.
- *
- * @param {string} username
- * @returns string
- */
 exports.getHash = (username) => {
-    const stmt = db.prepare('SELECT hash FROM users WHERE username=?');
-    return stmt.get(username).hash;
+    return stmtGetHash.get(username).hash;
 };
 
-/**
- * Devuelve los datos públicos de un usuario y, si existe, su voz.
- *
- * @param {string} username
- * @returns object|null
- */
 exports.getUser = (username) => {
-    const row = db.prepare(`
-        SELECT
-            u.username,
-            u.email,
-            v.frase,
-            v.color,
-            v.foto,
-            v.mostrar_email,
-            v.actualizado_en
-        FROM users u
-        LEFT JOIN voces v ON v.username = u.username
-        WHERE u.username = ?
-    `).get(username);
+    const row = stmtGetUser.get(username);
 
     if (!row) return null;
 
@@ -97,42 +106,16 @@ exports.getUser = (username) => {
     };
 };
 
-/**
- * Actualiza el nombre de usuario y el mail.
- * El cambio de username se propaga a la tabla 'voces' por ON UPDATE CASCADE.
- *
- * @param {string} currentUsername
- * @param {string} newUsername
- * @param {string} email
- */
 exports.updateUser = (currentUsername, newUsername, email) => {
     const update = db.transaction(() => {
-        db.prepare('UPDATE users SET username = ?, email = ? WHERE username = ?')
-            .run(newUsername, email, currentUsername);
+        stmtUpdateUser.run(newUsername, email, currentUsername);
     });
 
     update();
 };
 
-/**
- * Devuelve todos los usuarios registrados para el sketch.
- * Los usuarios sin voz también aparecen: su pez nada en blanco y no se pinta.
- *
- * @returns array
- */
 exports.getSketchData = () => {
-    const rows = db.prepare(`
-        SELECT
-            u.username,
-            u.email,
-            v.frase,
-            v.color,
-            v.foto,
-            v.mostrar_email
-        FROM users u
-        LEFT JOIN voces v ON v.username = u.username
-        ORDER BY u.username COLLATE NOCASE
-    `).all();
+    const rows = stmtGetSketchData.all();
 
     return rows.map((row) => {
         const tieneVoz = Boolean(row.frase);
@@ -155,37 +138,10 @@ exports.getSketchData = () => {
     });
 };
 
-/**
- * Crea o actualiza la voz de un usuario.
- * Queda preparado para la etapa de carga de datos.
- *
- * @param {object} voz
- */
 exports.upsertVoz = ({ username, frase, color, foto, mostrarEmail }) => {
-    const stmt = db.prepare(`
-        INSERT INTO voces (username, frase, color, foto, mostrar_email, actualizado_en)
-        VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-        ON CONFLICT(username) DO UPDATE SET
-            frase = excluded.frase,
-            color = excluded.color,
-            foto = excluded.foto,
-            mostrar_email = excluded.mostrar_email,
-            actualizado_en = CURRENT_TIMESTAMP
-    `);
-
-    stmt.run(username, frase, color, foto, mostrarEmail ? 1 : 0);
+    stmtUpsertVoz.run(username, frase, color, foto, mostrarEmail ? 1 : 0);
 };
 
-/**
- * Borra la voz de un usuario. Su pez vuelve a quedar blanco.
- *
- * @param {string} username
- */
 exports.deleteVoz = (username) => {
-    db.prepare('DELETE FROM voces WHERE username = ?').run(username);
+    stmtDeleteVoz.run(username);
 };
-
-
-// La conexión se cierra automáticamente cuando termina el proceso.
-// Evitamos cerrarla desde un handler de salida para no interferir con
-// la limpieza interna de better-sqlite3 en versiones recientes de Node.

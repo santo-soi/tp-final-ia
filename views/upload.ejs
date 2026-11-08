@@ -21,8 +21,7 @@
         <div class="card space-y-6">
             <div>
                 <label for="foto" class="label">Foto de perfil</label>
-                <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil" required>
-                <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB.</p>
+                <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil" <%= currentUser.foto ? '' : 'required' %>>                <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB.</p>
             </div>
 
             <div>

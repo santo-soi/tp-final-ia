@@ -4,6 +4,8 @@ const paleta = require('../config/palette.js');
 
 const router = express.Router();
 
+const { formidable } = require('formidable');
+
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -107,8 +109,63 @@ router.get('/upload', (req, res, next) => {
 });
 
 router.post('/upload', (req, res, next) => {
-    req.session.success = 'La carga de tu voz va a estar disponible en la próxima etapa.';
-    res.redirect('/user/profile');
+    // 1. Configuramos formidable según la guía de la cátedra
+    const form = formidable({
+        uploadDir: 'uploads',
+        allowEmptyFiles: true, // Permite guardar la voz aunque no suba foto
+        minFileSize: 0,
+        filter: ({ mimetype }) => {
+            // Filtramos para que solo acepte imágenes
+            const supportedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
+            return !mimetype || supportedTypes.has(mimetype);
+        }
+    });
+
+    // 2. Procesamos el formulario
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.error(err);
+            req.session.error = 'Hubo un error al procesar tu imagen. Intentá de nuevo.';
+            return res.redirect('/user/upload');
+        }
+
+        const username = req.session.user;
+        
+        // Formidable devuelve arrays en 'fields', tomamos el primer elemento
+        const frase = fields.frase ? fields.frase[0].trim() : '';
+        const color = fields.color ? fields.color[0] : '';
+        const mostrarEmail = fields.mostrarEmail ? fields.mostrarEmail[0] : null;
+
+        // 1. Consultamos los datos actuales del usuario en la base de datos
+        const usuarioActual = db.getUser(username);
+
+        // 2. Por defecto, mantenemos la foto que ya tenía guardada
+        let fotoPath = usuarioActual ? usuarioActual.foto : null;
+
+        // 3. Si efectivamente subió un archivo nuevo (y pesa más de 0 bytes), pisamos la variable
+        if (files.foto && files.foto[0].size > 0) {
+            fotoPath = '/uploads/' + files.foto[0].newFilename;
+        }
+
+        try {
+            // 3. Guardamos todo en la tabla 'voces' usando tu función
+            db.upsertVoz({
+                username: username,
+                frase: frase,
+                color: color,
+                foto: fotoPath,
+                mostrarEmail: mostrarEmail === "1"
+            });
+
+            req.session.success = '¡Tu voz fue cargada con éxito! Ya estás nadando en el cardumen.';
+            res.redirect('/user/profile');
+
+        } catch (error) {
+            console.error(error);
+            req.session.error = 'Hubo un error al guardar tu voz.';
+            res.redirect('/user/upload');
+        }
+    });
 });
 
 
