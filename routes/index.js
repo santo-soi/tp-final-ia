@@ -5,8 +5,6 @@ const db = require('../database/db.js');
 const router = express.Router();
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 
 /**
  * En app.js se insertan estas rutas en '/'
@@ -63,21 +61,14 @@ router.get('/signup', notlogged, (req, res, next) => {
 router.post('/signup', notlogged, (req, res, next) => {
     const {
         username = '',
-        email = '',
         password = '',
         confirmPassword = '',
     } = req.body;
 
     const cleanUsername = username.trim();
-    const cleanEmail = email.trim().toLowerCase();
 
     if (!USERNAME_REGEX.test(cleanUsername)) {
         req.session.error = 'El usuario debe tener entre 3 y 20 caracteres: letras, números o guión bajo.';
-        return res.redirect('/signup');
-    }
-
-    if (!EMAIL_REGEX.test(cleanEmail)) {
-        req.session.error = 'Ingresá un correo electrónico válido.';
         return res.redirect('/signup');
     }
 
@@ -97,7 +88,8 @@ router.post('/signup', notlogged, (req, res, next) => {
     }
 
     const hash = bcrypt.hashSync(password, 10);
-    db.addUser(cleanUsername, cleanEmail, hash);
+    // Pasamos solo username y hash
+    db.addUser(cleanUsername, hash); 
 
     req.session.success = 'Tu cuenta fue creada. Ahora podés ingresar.';
     res.redirect('/login');

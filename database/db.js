@@ -26,42 +26,38 @@ db.exec(vocesSchema);
  */
 const stmtLog = db.prepare('SELECT rowid, * FROM users');
 const stmtUserExists = db.prepare('SELECT username FROM users WHERE username=?');
-const stmtAddUser = db.prepare('INSERT INTO users VALUES (?, ?, ?)');
+const stmtAddUser = db.prepare('INSERT INTO users VALUES (?, ?)');
 const stmtGetHash = db.prepare('SELECT hash FROM users WHERE username=?');
 const stmtGetUser = db.prepare(`
     SELECT
         u.username,
-        u.email,
         v.frase,
         v.color,
         v.foto,
-        v.mostrar_email,
         v.actualizado_en
     FROM users u
     LEFT JOIN voces v ON v.username = u.username
     WHERE u.username = ?
 `);
-const stmtUpdateUser = db.prepare('UPDATE users SET username = ?, email = ? WHERE username = ?');
+const stmtUpdateUsername = db.prepare('UPDATE users SET username = ? WHERE username = ?');
+const stmtUpdatePassword = db.prepare('UPDATE users SET hash = ? WHERE username = ?');
 const stmtGetSketchData = db.prepare(`
     SELECT
         u.username,
-        u.email,
         v.frase,
         v.color,
-        v.foto,
-        v.mostrar_email
+        v.foto
     FROM users u
     LEFT JOIN voces v ON v.username = u.username
     ORDER BY u.username COLLATE NOCASE
 `);
 const stmtUpsertVoz = db.prepare(`
-    INSERT INTO voces (username, frase, color, foto, mostrar_email, actualizado_en)
-    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    INSERT INTO voces (username, frase, color, foto, actualizado_en)
+    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
     ON CONFLICT(username) DO UPDATE SET
         frase = excluded.frase,
         color = excluded.color,
         foto = excluded.foto,
-        mostrar_email = excluded.mostrar_email,
         actualizado_en = CURRENT_TIMESTAMP
 `);
 const stmtDeleteVoz = db.prepare('DELETE FROM voces WHERE username = ?');
@@ -81,8 +77,8 @@ exports.userExists = (username) => {
     return Boolean(value);
 };
 
-exports.addUser = (username, email, hash) => {
-    stmtAddUser.run(username, email, hash);
+exports.addUser = (username, hash) => {
+    stmtAddUser.run(username, hash);
 };
 
 exports.getHash = (username) => {
@@ -91,27 +87,23 @@ exports.getHash = (username) => {
 
 exports.getUser = (username) => {
     const row = stmtGetUser.get(username);
-
     if (!row) return null;
-
     return {
         username: row.username,
-        email: row.email,
         tieneVoz: Boolean(row.frase),
         frase: row.frase,
         color: row.color,
         foto: row.foto,
-        mostrarEmail: Boolean(row.mostrar_email),
         actualizadoEn: row.actualizado_en,
     };
 };
 
-exports.updateUser = (currentUsername, newUsername, email) => {
-    const update = db.transaction(() => {
-        stmtUpdateUser.run(newUsername, email, currentUsername);
-    });
+exports.updateUsername = (currentUsername, newUsername) => {
+    stmtUpdateUsername.run(newUsername, currentUsername);
+};
 
-    update();
+exports.updatePassword = (username, newHash) => {
+    stmtUpdatePassword.run(newHash, username);
 };
 
 exports.getSketchData = () => {
@@ -138,8 +130,8 @@ exports.getSketchData = () => {
     });
 };
 
-exports.upsertVoz = ({ username, frase, color, foto, mostrarEmail }) => {
-    stmtUpsertVoz.run(username, frase, color, foto, mostrarEmail ? 1 : 0);
+exports.upsertVoz = ({ username, frase, color, foto }) => {
+    stmtUpsertVoz.run(username, frase, color, foto);
 };
 
 exports.deleteVoz = (username) => {

@@ -35,6 +35,23 @@
                     <input id="email" name="email" type="email" class="input" value="<%= currentUser.email %>" required>
                 </div>
 
+                <div class="border-t border-linea pt-5 mt-5">
+                    <h3 class="text-lg">Cambiar contraseña</h3>
+                    <p class="mt-1 text-xs text-gris mb-4">Completá estos campos solo si querés cambiar tu contraseña actual.</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="currentPassword" class="label">Contraseña actual</label>
+                            <input id="currentPassword" name="currentPassword" type="password" class="input">
+                        </div>
+                        
+                        <div>
+                            <label for="newPassword" class="label">Nueva contraseña</label>
+                            <input id="newPassword" name="newPassword" type="password" class="input" minlength="6">
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-solid">Guardar cambios</button>
             </form>
         </section>
@@ -63,10 +80,6 @@
                     </div>
 
                     <p class="rounded-2xl bg-marfil px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
-
-                    <p class="text-xs text-gris">
-                        <%= currentUser.mostrarEmail ? 'Tu mail se muestra en la obra.' : 'Tu mail está oculto en la obra.' %>
-                    </p>
 
                     <div class="flex flex-wrap gap-3">
                         <a href="/user/upload" class="btn">Editar mi voz</a>

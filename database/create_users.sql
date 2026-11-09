@@ -3,6 +3,5 @@
 CREATE TABLE IF NOT EXISTS users
 (
     username varchar(255) NOT NULL UNIQUE,
-    email varchar(255) NOT NULL,
     hash varchar(255) NOT NULL
 )
