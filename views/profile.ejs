@@ -18,11 +18,21 @@
                 Tu nombre de usuario es el que se ve en la obra. Podés cambiarlo cuando quieras.
             </p>
 
-            <form action="/user/profile" method="POST" class="mt-6 space-y-5">
+            <form action="/user/profile" method="POST" enctype="multipart/form-data" class="mt-6 space-y-5">
                 <div>
                     <label for="username" class="label">Nombre de usuario</label>
                     <input id="username" name="username" type="text" class="input" value="<%= currentUser.username %>" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" required>
                     <p class="mt-2 text-xs text-gris">Entre 3 y 20 caracteres: letras, números o guión bajo.</p>
+                </div>
+
+                <div>
+                <label for="foto" class="label">Foto de perfil</label>
+                <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil" <%= currentUser.foto ? '' : 'required' %>>                <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB.</p>
+                </div>
+
+                <div>
+                    <label for="email" class="label">Correo electrónico</label>
+                    <input id="email" name="email" type="email" class="input" value="<%= currentUser.email %>" required>
                 </div>
 
                 <div class="border-t border-linea pt-5 mt-5">
