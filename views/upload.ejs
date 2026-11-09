@@ -17,12 +17,8 @@
         <a href="/user" class="btn btn-ghost">← Volver a mi espacio</a>
     </div>
 
-    <form action="/user/upload" method="POST" enctype="multipart/form-data" class="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <form action="/user/upload" method="POST" class="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div class="card space-y-6">
-            <div>
-                <label for="foto" class="label">Foto de perfil</label>
-                <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil" <%= currentUser.foto ? '' : 'required' %>>                <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB.</p>
-            </div>
 
             <div>
                 <label for="email" class="label">Correo electrónico</label>
