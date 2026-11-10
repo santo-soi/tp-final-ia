@@ -1,4 +1,4 @@
-<%- include('partials/head') %>
+<%- include('partials/headObra') %>
 <%- include('partials/header') %>
 <%- include('partials/flash') %>
 
@@ -32,8 +32,8 @@
     </section>
 
     <section class="mx-auto max-w-6xl px-6 py-16">
-        <div class="grid gap-6 md:grid-cols-3">
-            <article class="card">
+        <div id="contenedor-canvas-p5">
+            <!-- <article class="card"> class="grid gap-6 md:grid-cols-3"
                 <p class="eyebrow">Fondo</p>
                 <h2 class="mt-3 text-2xl">Corrientes</h2>
                 <p class="mt-2 text-sm leading-relaxed text-gris">Partículas y ruido de Perlin en blanco y negro.</p>
@@ -49,7 +49,7 @@
                 <p class="eyebrow">Voces</p>
                 <h2 class="mt-3 text-2xl">Cada 10 segundos</h2>
                 <p class="mt-2 text-sm leading-relaxed text-gris">Un pez se pinta con el color de su usuario y muestra su frase en una viñeta.</p>
-            </article>
+            </article> -->
         </div>
 
         <% if (currentUser && !currentUser.tieneVoz) { %>
