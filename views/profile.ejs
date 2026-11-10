@@ -26,8 +26,21 @@
                 </div>
 
                 <div>
-                <label for="foto" class="label">Foto de perfil</label>
-                <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil" <%= currentUser.foto ? '' : 'required' %>>                <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB.</p>
+                    <label for="foto" class="label">Foto de perfil</label>
+
+                    <div class="mt-2 flex items-center gap-4">
+                        <% if (currentUser.foto) { %>
+                            <img src="<%= currentUser.foto %>" alt="Foto de perfil actual de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea object-cover">
+                        <% } else { %>
+                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea bg-marfil font-display text-xl">
+                                <%= currentUser.username.charAt(0).toUpperCase() %>
+                            </span>
+                        <% } %>
+                        <p class="text-xs text-gris">Así se ve tu foto hoy. Podés reemplazarla o cargarla con el campo de abajo.</p>
+                    </div>
+
+                    <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input mt-3 file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil">
+                    <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB. Opcional.</p>
                 </div>
 
                 <div class="border-t border-linea pt-5 mt-5">
@@ -85,7 +98,7 @@
                 </div>
             <% } else { %>
                 <p class="mt-4 text-sm leading-relaxed text-gris">
-                    Todavía no cargaste tu frase ni elegiste el color de tu pez. Tu pez nada en blanco y no participa del ciclo de la obra.
+                    Todavía no cargaste tu frase ni elegiste el color de tu pez. Tu pez nada en blanco y su voz todavía no aparece en la obra.
                 </p>
                 <a href="/user/upload" class="btn btn-solid mt-6">Cargar mi voz</a>
             <% } %>

@@ -19,6 +19,47 @@ db.exec(vocesSchema);
 
 
 /**
+ * --- MIGRACIONES ---
+ * Las bases creadas con el esquema anterior guardaban la foto en 'voces'
+ * y no tenían la columna 'foto' en 'users'. Si se detecta ese esquema,
+ * la foto se mueve al perfil (existe aunque el usuario no tenga voz)
+ * y 'voces' se regenera conservando solo frase y color.
+ */
+
+const columnasUsers = db.pragma('table_info(users)');
+if (!columnasUsers.some((columna) => columna.name === 'foto')) {
+    db.exec('ALTER TABLE users ADD COLUMN foto TEXT');
+}
+
+const columnasVoces = db.pragma('table_info(voces)');
+if (columnasVoces.some((columna) => columna.name === 'foto')) {
+    // 1. Mover la foto guardada en 'voces' al perfil del usuario.
+    db.exec(`
+        UPDATE users
+        SET foto = (SELECT v.foto FROM voces v WHERE v.username = users.username)
+        WHERE foto IS NULL
+    `);
+
+    // 2. Regenerar 'voces' sin la columna 'foto', preservando las voces.
+    db.exec(`
+        CREATE TABLE voces_sin_foto (
+            username TEXT PRIMARY KEY,
+            frase TEXT NOT NULL,
+            color TEXT NOT NULL,
+            actualizado_en TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE ON UPDATE CASCADE
+        )
+    `);
+    db.exec(`
+        INSERT INTO voces_sin_foto (username, frase, color, actualizado_en)
+        SELECT username, frase, color, actualizado_en FROM voces
+    `);
+    db.exec('DROP TABLE voces');
+    db.exec('ALTER TABLE voces_sin_foto RENAME TO voces');
+}
+
+
+/**
  * --- PREPARACIÓN DE CONSULTAS ---
  * Al compilar las consultas una sola vez a nivel del módulo,
  * evitamos que el Garbage Collector destruya los objetos en Windows
@@ -26,14 +67,14 @@ db.exec(vocesSchema);
  */
 const stmtLog = db.prepare('SELECT rowid, * FROM users');
 const stmtUserExists = db.prepare('SELECT username FROM users WHERE username=?');
-const stmtAddUser = db.prepare('INSERT INTO users VALUES (?, ?)');
+const stmtAddUser = db.prepare('INSERT INTO users (username, hash) VALUES (?, ?)');
 const stmtGetHash = db.prepare('SELECT hash FROM users WHERE username=?');
 const stmtGetUser = db.prepare(`
     SELECT
         u.username,
+        u.foto,
         v.frase,
         v.color,
-        v.foto,
         v.actualizado_en
     FROM users u
     LEFT JOIN voces v ON v.username = u.username
@@ -41,23 +82,23 @@ const stmtGetUser = db.prepare(`
 `);
 const stmtUpdateUsername = db.prepare('UPDATE users SET username = ? WHERE username = ?');
 const stmtUpdatePassword = db.prepare('UPDATE users SET hash = ? WHERE username = ?');
+const stmtUpdateFoto = db.prepare('UPDATE users SET foto = ? WHERE username = ?');
 const stmtGetSketchData = db.prepare(`
     SELECT
         u.username,
+        u.foto,
         v.frase,
-        v.color,
-        v.foto
+        v.color
     FROM users u
     LEFT JOIN voces v ON v.username = u.username
     ORDER BY u.username COLLATE NOCASE
 `);
 const stmtUpsertVoz = db.prepare(`
-    INSERT INTO voces (username, frase, color, foto, actualizado_en)
-    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+    INSERT INTO voces (username, frase, color, actualizado_en)
+    VALUES (?, ?, ?, CURRENT_TIMESTAMP)
     ON CONFLICT(username) DO UPDATE SET
         frase = excluded.frase,
         color = excluded.color,
-        foto = excluded.foto,
         actualizado_en = CURRENT_TIMESTAMP
 `);
 const stmtDeleteVoz = db.prepare('DELETE FROM voces WHERE username = ?');
@@ -90,10 +131,10 @@ exports.getUser = (username) => {
     if (!row) return null;
     return {
         username: row.username,
+        foto: row.foto,
         tieneVoz: Boolean(row.frase),
         frase: row.frase,
         color: row.color,
-        foto: row.foto,
         actualizadoEn: row.actualizado_en,
     };
 };
@@ -106,32 +147,25 @@ exports.updatePassword = (username, newHash) => {
     stmtUpdatePassword.run(newHash, username);
 };
 
-exports.getSketchData = () => {
-    const rows = stmtGetSketchData.all();
-
-    return rows.map((row) => {
-        const tieneVoz = Boolean(row.frase);
-
-        if (!tieneVoz) {
-            return {
-                username: row.username,
-                tieneVoz: false,
-            };
-        }
-
-        return {
-            username: row.username,
-            tieneVoz: true,
-            frase: row.frase,
-            color: row.color,
-            foto: row.foto,
-            email: row.mostrar_email ? row.email : null,
-        };
-    });
+// Guarda la ruta pública de la foto de perfil (ej: '/uploads/abc123.jpg').
+exports.updateFoto = (username, foto) => {
+    stmtUpdateFoto.run(foto, username);
 };
 
-exports.upsertVoz = ({ username, frase, color, foto }) => {
-    stmtUpsertVoz.run(username, frase, color, foto);
+// Datos que la obra necesita: un registro por usuario registrado,
+// con su foto de perfil y (si la cargó) su voz.
+exports.getSketchData = () => {
+    return stmtGetSketchData.all().map((row) => ({
+        username: row.username,
+        foto: row.foto,
+        tieneVoz: Boolean(row.frase),
+        frase: row.frase || null,
+        color: row.color || null,
+    }));
+};
+
+exports.upsertVoz = ({ username, frase, color }) => {
+    stmtUpsertVoz.run(username, frase, color);
 };
 
 exports.deleteVoz = (username) => {

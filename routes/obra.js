@@ -11,7 +11,14 @@ const router = express.Router();
  */
 
 router.get('/', (req, res, next) => {
-    res.render('obra', { pageTitle: 'La obra' });
+    // Los usuarios registrados se envían a la vista y de ahí al sketch de p5.js.
+    const usuarios = db.getSketchData();
+
+    // Se serializa como string JSON seguro para embeber en un <script>
+    // (se escapan los '<' para que una frase no pueda cerrar el tag).
+    const usuariosObra = JSON.stringify(usuarios).replace(/</g, '\\u003c');
+
+    res.render('obra', { pageTitle: 'La obra', usuariosObra });
 });
 
 router.get('/data', (req, res, next) => {
