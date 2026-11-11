@@ -9,10 +9,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/public/css/style.css">
+
+    <!-- Usuarios registrados que la ruta /obra serializa desde la base de datos.
+         El sketch los lee desde window.usuariosObra para armar el cardumen. -->
+    <% if (locals.usuariosObra) { %>
+    <script type="text/javascript">
+        window.usuariosObra = <%- usuariosObra %>;
+    </script>
+    <% } %>
+
     <script type="text/javascript" src="/public/p5/p5.min.js"></script>
     <script type="text/javascript" src="/public/p5/addons/p5.sound.min.js"></script>
-    <script type="text/javascript" src="/public/p5/obra/sketch.js"></script>    
+    <!-- Primero la clase Cardumen/Pez, después el sketch que la usa -->
     <script type="text/javascript" src="/public/p5/obra/cardumen.js"></script>
+    <script type="text/javascript" src="/public/p5/obra/sketch.js"></script>
 </head>
 <body class="<%= locals.bodyClass || 'bg-marfil text-tinta' %>">
     <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-tinta focus:px-5 focus:py-3 focus:text-xs focus:uppercase focus:tracking-widest focus:text-marfil">Saltar al contenido</a>

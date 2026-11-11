@@ -3,6 +3,7 @@ module.exports = {
   content: [
     './views/**/*.ejs',
     './public/js/**/*.js',
+    './public/p5/**/*.js',
   ],
   theme: {
     extend: {

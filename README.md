@@ -1,10 +1,10 @@
 # Océano de Voces
 
-Sitio web artístico colaborativo para el trabajo práctico de la facultad. Cada persona registrada tiene un pez dentro de un cardumen; cuando carga su voz (foto, frase y color), su pez puede iluminarse y mostrar su historia en la obra.
+Sitio web artístico colaborativo para el trabajo práctico de la facultad. Cada persona registrada tiene un pez dentro de un cardumen; cuando carga su voz (frase y color), su pez se pinta y, al hacer clic en el océano, su voz se muestra en una viñeta junto a su foto de perfil.
 
 ## Estado actual
 
-Esta etapa resuelve la **estructura de navegación, los endpoints y el estilo base con Tailwind CSS**. El login, el registro y la edición de usuario/mail están funcionando. La carga completa de la voz (foto, frase y color) y el sketch en p5.js quedan para la próxima etapa.
+La **estructura de navegación, los endpoints y el estilo base con Tailwind CSS** están funcionando, al igual que el login, el registro y la edición de usuario, contraseña y foto de perfil (`/user/profile`). La carga de la voz (`/user/upload`) guarda frase y color. La obra (`/obra`) genera un pez por cada usuario registrado en el sketch de p5.js.
 
 ## Requisitos
 
@@ -54,7 +54,7 @@ npm run watch:css
 | POST | `/signup` | Crea la cuenta y redirige al login. |
 | GET | `/login` | Formulario de ingreso. |
 | POST | `/login` | Autentica y redirige a `/user`. |
-| GET | `/obra` | Página de la obra (por ahora, placeholder del sketch). |
+| GET | `/obra` | Página de la obra con el sketch de p5.js (un pez por usuario). |
 | GET | `/obra/data` | JSON con todos los usuarios registrados y sus voces. |
 
 ### Privadas (`/user`, requieren sesión)
@@ -62,10 +62,10 @@ npm run watch:css
 | Método | Ruta | Función |
 |---|---|---|
 | GET | `/user` | Índice de usuario con accesos a perfil, voz y obra. |
-| GET | `/user/profile` | Datos de la cuenta y estado de la voz. |
-| POST | `/user/profile` | Actualiza usuario y mail. |
+| GET | `/user/profile` | Datos de la cuenta (usuario, contraseña y foto) y estado de la voz. |
+| POST | `/user/profile` | Actualiza usuario, contraseña y foto de perfil (multipart, vía formidable). |
 | GET | `/user/upload` | Formulario de carga/edición de la voz. |
-| POST | `/user/upload` | Ruta preparada; la carga completa se implementa en la próxima etapa. |
+| POST | `/user/upload` | Guarda la voz del usuario logueado: frase y color. |
 | POST | `/user/profile/delete-voz` | Borra la voz del usuario. |
 | GET | `/user/logout` | Cierra la sesión. |
 
@@ -119,12 +119,13 @@ tailwind.config.js
 
 - Un pez por cada usuario registrado, aunque todavía no haya cargado su voz.
 - El username es el nombre visible en la obra y se puede cambiar desde el perfil.
-- La foto de perfil es obligatoria.
-- El mail se muestra en la obra, con opción de ocultarlo.
-- Una frase de hasta 180 caracteres.
+- La foto de perfil se sube desde `/user/profile` y es opcional; se guarda en la tabla `users`.
+- La voz (frase y color) se carga desde `/user/upload`; se guarda en la tabla `voces`.
+- Una frase de hasta 180 caracteres y un color de la paleta (`config/palette.js`).
+- El pez se pinta con el color elegido si el usuario cargó su voz; si no, permanece blanco.
 - La obra es pública; para cargar o editar la voz hay que iniciar sesión.
-- El ciclo de la obra iluminará un pez cada 10 segundos.
+- Al hacer clic en el canvas, la voz del pez con voz más cercano se muestra en una viñeta (`vineta-frase`) durante 6 segundos.
 
 ## Rama de trabajo
 
-El desarrollo de esta etapa está en la rama `feature/estructura-navegacion`.
+El desarrollo de esta etapa está en la rama `estructura-navegacion`.
