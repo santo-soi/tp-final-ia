@@ -14,7 +14,7 @@
          El sketch los lee desde window.usuariosObra para armar el cardumen. -->
     <% if (locals.usuariosObra) { %>
     <script type="text/javascript">
-        window.usuariosObra = <%- usuariosObra %>;
+        window.usuariosObra = <%- usuariosObra %>;  
     </script>
     <% } %>
 
@@ -22,6 +22,7 @@
     <script type="text/javascript" src="/public/p5/addons/p5.sound.min.js"></script>
     <!-- Primero la clase Cardumen/Pez, después el sketch que la usa -->
     <script type="text/javascript" src="/public/p5/obra/cardumen.js"></script>
+    <script type="text/javascript" src="/public/p5/obra/campo_de_particulas.js"></script>
     <script type="text/javascript" src="/public/p5/obra/sketch.js"></script>
 </head>
 <body class="<%= locals.bodyClass || 'bg-marfil text-tinta' %>">

@@ -39,26 +39,6 @@ class Cardumen {
         return null;
     }
 
-    // Devuelve el pez más cercano al punto clickeado que tenga voz cargada.
-
-    // Los peces de usuarios sin voz no participan de la viñeta.
-    // obtenerPezCercano(x, y) {
-    //     let masCercano = null;
-    //     let distanciaMinima = Infinity;
-
-    //     for (let pez of this.peces) {
-    //         if (!pez.tieneVoz()) continue;
-
-    //         let distancia = dist(x, y, pez.x, pez.y);
-    //         if (distancia < distanciaMinima) {
-    //             distanciaMinima = distancia;
-    //             masCercano = pez;
-    //         }
-    //     }
-
-    //     return masCercano;
-    // }
-
     // Recorre `this.peces` para actualizar y dibujar cada pez.
     dibujarContenido() {
         this.gestionarSeleccion();
@@ -79,13 +59,11 @@ class Pez {
         this.x = x;
         this.y = y;
         this.escala = escala; //Tamaño del pez
-
         // Datos del usuario que este pez representa
         this.usuario = datos.username;
         this.frase = datos.frase || null; // Sin voz cargada -> null
         this.color = datos.color || null;
         this.foto = datos.foto || null; // Ruta pública de la foto de perfil
-
         // Offsets independientes para que cada pez tenga un movimiento de noise único
         this.xOff = random(1000);
         this.yOff = random(2000);
@@ -103,35 +81,19 @@ class Pez {
         // Generamos desplazamiento suave y orgánico usando Perlin Noise
         let vx = map(noise(this.xOff), 0, 1, -this.velocidad, this.velocidad);
         let vy = map(noise(this.yOff), 0, 1, -this.velocidad, this.velocidad);
-
         this.x += vx;
         this.y += vy;
-
         // Avanzamos en el tiempo del noise para el próximo frame
         this.xOff += 0.008;
         this.yOff += 0.008;
-
         // Calculamos la rotación del pez según hacia dónde se está moviendo
         this.angulo = atan2(vy, vx);
-
-        let margen = 50;
-        if (this.x < margen) {
-            this.x = margen;
-            this.xOff += 10; // Cambia su rumbo si toca el borde
-        }
-        if (this.x > width - margen) {
-            this.x = width - margen;
-            this.xOff += 10;
-        }
-        if (this.y < margen) {
-            this.y = margen;
-            this.yOff += 10;
-        }
-        if (this.y > height - margen) {
-            this.y = height - margen;
-            this.yOff += 10;
-        }
-
+        // Cambia su rumbo si toca el borde
+        let margen = 50; 
+        if (this.x < margen) this.x = margen; this.xOff += 10; 
+        if (this.x > width - margen) this.x = width - margen; this.xOff += 10;
+        if (this.y < margen)  this.y = margen; this.yOff += 10;
+        if (this.y > height - margen) this.y = height - margen; this.yOff += 10;
     }
 
     dibujarFormaPez() { // Forma del pez a dibujar.
@@ -148,15 +110,9 @@ class Pez {
         push();
         translate(this.x, this.y);
         rotate(radians(this.angulo)); //rota el pez alrededor de su propio centro
-
         // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
         // si todavía no la cargó, permanece en blanco.
-        if (this.tieneVoz() && seleccionado) {
-            fill(this.color);
-        } else {
-            fill(255);
-        }
-
+        if (this.tieneVoz() && seleccionado) fill(this.color); else fill(255);
         stroke(0);
         strokeWeight(2);
         this.dibujarFormaPez();
