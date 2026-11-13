@@ -7,7 +7,8 @@
         <div class="fondo-ola absolute inset-0 opacity-80"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-marfil/10 via-marfil/50 to-marfil"></div>
 
-        <div class="relative mx-auto flex min-h-[58vh] max-w-6xl flex-col justify-center px-6 py-20">
+        <!-- Se ajustó la altura (min-h-[45vh]) y el padding para compensar los botones eliminados -->
+        <div class="relative mx-auto flex min-h-[45vh] max-w-6xl flex-col justify-center px-6 py-16">
             <p class="eyebrow">Mi espacio</p>
             <h1 class="mt-6 text-5xl leading-[0.95] tracking-tight md:text-7xl">
                 Bienvenid@, <span class="italic"><%= currentUser.username %></span>
@@ -15,14 +16,6 @@
             <p class="mt-6 max-w-xl text-base leading-relaxed text-gris md:text-lg">
                 Este es tu rincón del océano. Desde acá podés administrar tu perfil, cargar o modificar tu voz y mirar la obra cuando quieras.
             </p>
-
-            <div class="mt-8 flex flex-wrap items-center gap-3">
-                <a href="/user/upload" class="btn btn-solid">
-                    <%= currentUser.tieneVoz ? 'Editar mi voz' : 'Cargar mi voz' %>
-                </a>
-                <a href="/user/profile" class="btn">Mi perfil</a>
-                <a href="/obra" class="btn btn-ghost">Ir a la obra</a>
-            </div>
         </div>
     </section>
 
@@ -49,15 +42,18 @@
             </a>
         </div>
 
-        <% if (!currentUser.tieneVoz) { %>
-            <div class="mt-10 flex flex-col gap-5 rounded-3xl bg-tinta px-6 py-6 text-marfil md:flex-row md:items-center md:justify-between">
-                <div>
+        <!-- Pastilla negra: Mensaje dinámico sin botones -->
+        <div class="mt-10 flex flex-col gap-5 rounded-3xl bg-tinta px-6 py-6 text-marfil md:flex-row md:items-center md:justify-between">
+            <div>
+                <% if (!currentUser.tieneVoz) { %>
                     <p class="text-xs uppercase tracking-[0.2em] text-marfil/60">Tu pez todavía está en blanco</p>
                     <p class="mt-2 font-display text-2xl">Cargá tu voz para que el océano lo ilumine.</p>
-                </div>
-                <a href="/user/upload" class="btn border-marfil text-marfil hover:bg-marfil hover:text-tinta">Cargar mi voz</a>
+                <% } else { %>
+                    <p class="text-xs uppercase tracking-[0.2em] text-marfil/60">Tu pez tiene un mensaje</p>
+                    <p class="mt-2 font-display text-2xl">Tu voz ya es parte del cardumen, podés modificarla cuando quieras.</p>
+                <% } %>
             </div>
-        <% } %>
+        </div>
     </section>
 </main>
 

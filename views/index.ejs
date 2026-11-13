@@ -7,7 +7,7 @@
         <div class="fondo-ola absolute inset-0 opacity-80"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-marfil/10 via-marfil/50 to-marfil"></div>
 
-        <div class="relative mx-auto flex min-h-[80vh] max-w-6xl flex-col justify-center px-6 py-24">
+        <div class="relative mx-auto flex min-h-[55vh] max-w-6xl flex-col justify-center px-6 py-16">
             <p class="eyebrow">Obra Web Colaborativa</p>
             <h1 class="mt-6 max-w-4xl font-display text-6xl leading-[0.92] tracking-tight md:text-8xl">
                 Un océano<br>
@@ -18,21 +18,11 @@
                 Cada pez es alguien registrado y puede manifestar su voz en un mensaje.<br>
                 La obra se construye entre todos.
             </p>
-
-            <div class="mt-24 flex flex-wrap justify-center items-center gap-4">
-                <a href="/obra" class="btn btn-solid text-xl">Ver la obra</a>
-
-                <% if (currentUser) { %>
-                    <a href="/user" class="btn">Ir a mi espacio</a>
-                <% } else { %>
-                    <!-- <a href="/signup" class="btn">Crear mi cuenta</a>
-                    <a href="/login" class="btn btn-ghost">Ya tengo cuenta</a> -->
-                <% } %>
-            </div> 
         </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-6">
+    <!-- Agregado mt-20 para dar más espacio arriba de la sección Formá parte -->
+    <section class="mx-auto max-w-6xl px-6 mt-20">
 
         <div class=" flex items-center text-base uppercase tracking-[0.2em] text-gris mb-10">
             <span>Formá parte</span>
@@ -51,30 +41,38 @@
                 <p class="eyebrow">02 · Cargá tu voz</p>
                 <h2 class="mt-3 text-2xl">Elegí tu frase y tu color</h2>
                 <p class="mt-3 text-sm leading-relaxed text-gris">
-                    En tu perfil subís tu foto; acá escribís una frase de hasta 180 caracteres y elegís el color con el que se va a pintar tu pez.
+                    Escribís una frase, una reflexión, un poema, de hasta 180 caracteres y elegís el color con el que se va a pintar tu pez.
                 </p>
             </article>
 
             <article>
                 <p class="eyebrow">03 · Mirá la obra</p>
-                <h2 class="mt-3 text-2xl">Encontrala en el cardumen</h2>
+                <h2 class="mt-3 text-2xl">Encontrate con el cardumen</h2>
                 <p class="mt-3 text-sm leading-relaxed text-gris">
-                    Clickeá el océano y la voz del pez más cercano aparece en una viñeta durante 6 segundos.
+                    Clickeá el océano y la voz del pez coloreado aparecerá en una viñeta.
                 </p>
             </article>
         </div>
     </section>
 
-    <section class="border-y border-linea bg-white/40 mt-10">
-        <div class="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 md:flex-row md:items-end md:justify-between">
-            <div>
+
+    <section class="border-y border-linea bg-white/40 mt-24">
+        <div class="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 md:flex-row md:items-end md:justify-between">            <div>
                 <p class="eyebrow">La obra</p>
                 <h2 class="mt-3 max-w-2xl text-3xl leading-tight md:text-4xl">
                     Un pez por cada persona registrada.<br>
                     <span class="italic">Una frase por cada voz.</span>
                 </h2>
             </div>
-            <a href="/obra" class="btn">Entrar al océano</a>
+            
+            <div class="flex flex-wrap gap-3">
+                <% if (currentUser) { %>
+                    <a href="/user/upload" class="btn">Mi voz</a>
+                    <a href="/obra" class="btn">Entrar al océano</a>
+                <% } else { %>
+                    <a href="/login" class="btn">Entrar al océano</a>
+                <% } %>
+            </div>
         </div>
     </section>
 </main>

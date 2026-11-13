@@ -1,8 +1,11 @@
 <footer class="mt-24 border-t border-linea bg-slate-800">
-    <div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-[1.3fr_1fr_1fr]">
-        <div>
+    <!-- Se vuelve al diseño de ancho máximo centrado, y se usa md:grid-cols-[1.5fr_1fr_1fr_1fr] para darle más espacio al primer bloque -->
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        
+        <!-- Bloque izquierdo con más espacio asignado (1.5fr) -->
+        <div class="pr-8"> <!-- Se agrega padding a la derecha (pr-8) para separarlo más del bloque de enlaces -->
             <p class="font-display text-2xl text-white">Océano de Voces</p>
-            <p class="mt-3 max-w-sm text-sm leading-relaxed text-gris">Un cardumen colaborativo hecho de las frases de sus usuarios. Cada voz enciende un pez.</p>
+            <p class="mt-3 text-sm leading-relaxed text-gris">Un cardumen colaborativo hecho de las frases de sus participantes. Cada voz cuenta.</p>
         </div>
 
         <div>
@@ -27,10 +30,19 @@
                 <% } %>
             </ul>
         </div>
+
+        <div>
+            <p class="eyebrow">Nosotrxs</p>
+            <ul class="mt-4 space-y-2 text-sm text-gris">
+                <li><a href="https://github.com/santo-soi" target="_blank" rel="noopener noreferrer" class="link-underline">Santo</a></li>
+                <li><a href="https://github.com/SegWayGG" target="_blank" rel="noopener noreferrer" class="link-underline">Fran</a></li>
+            </ul>
+        </div>
     </div>
 
-    <div class="border-t border-linea/70 px-6 py-5">
-        <p class="mx-auto max-w-6xl text-xs text-gris">Proyecto colaborativo · Trabajo práctico · 2026</p>
+    <!-- Barra inferior: se alinea a la izquierda quitando 'mx-auto' del párrafo, para que quede al mismo nivel que el texto de arriba -->
+    <div class="border-t border-linea/70 px-6 py-5 mx-auto max-w-6xl">
+        <p class="text-xs text-gris">Proyecto colaborativo · Trabajo práctico · 2026</p>
     </div>
 </footer>
 </body>
