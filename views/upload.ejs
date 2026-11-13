@@ -3,14 +3,14 @@
 <%- include('partials/flash') %>
 
 <main id="contenido" class="mx-auto max-w-6xl px-6 py-16">
-    <div class="flex flex-col gap-4 border-b border-linea pb-8 md:flex-row md:items-end md:justify-between">
+    <div class="flex flex-col gap-4 border-b border-linea dark:border-slate-700 pb-8 md:flex-row md:items-end md:justify-between">
         <div>
             <p class="eyebrow">Mi voz</p>
             <h1 class="mt-3 text-5xl leading-tight md:text-6xl">
                 Elegí cómo<br>
                 <span class="italic">nada tu pez.</span>
             </h1>
-            <p class="mt-4 max-w-xl text-sm leading-relaxed text-gris">
+            <p class="mt-4 max-w-xl text-sm leading-relaxed text-gris dark:text-slate-400">
                 Tu frase y un color. Con eso tu pez se pinta y su voz puede mostrarse en la obra. Tu foto de perfil se administra desde <a href="/user/profile" class="underline">mi perfil</a>.
             </p>
         </div>
@@ -23,7 +23,7 @@
             <div>
                 <label for="frase" class="label">Tu frase</label>
                 <textarea id="frase" name="frase" rows="4" maxlength="180" class="input resize-none" placeholder="Una frase, una pregunta, un recuerdo..." required><%= currentUser.frase || '' %></textarea>
-                <p class="mt-2 text-xs text-gris">Hasta 180 caracteres.</p>
+                <p class="mt-2 text-xs text-gris dark:text-slate-400">Hasta 180 caracteres.</p>
             </div>
 
             <div>
@@ -36,7 +36,7 @@
                         </label>
                     <% }) %>
                 </div>
-                <p class="mt-3 text-xs text-gris">Paleta provisoria. Se puede ajustar más adelante.</p>
+                <p class="mt-3 text-xs text-gris dark:text-slate-400">Paleta provisoria. Se puede ajustar más adelante.</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">

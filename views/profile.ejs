@@ -3,7 +3,7 @@
 <%- include('partials/flash') %>
 
 <main id="contenido" class="mx-auto max-w-6xl px-6 py-16">
-    <div class="flex flex-col gap-4 border-b border-linea pb-8 md:flex-row md:items-end md:justify-between">
+    <div class="flex flex-col gap-4 border-b border-linea dark:border-slate-700 pb-8 md:flex-row md:items-end md:justify-between">
         <div>
             <p class="eyebrow">Mi perfil</p>
             <h1 class="mt-3 text-5xl leading-tight md:text-6xl">Tus datos.</h1>
@@ -14,7 +14,7 @@
     <div class="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
         <section class="card">
             <h2 class="text-2xl">Cuenta</h2>
-            <p class="mt-2 text-sm leading-relaxed text-gris">
+            <p class="mt-2 text-sm leading-relaxed text-gris dark:text-slate-400">
                 Tu nombre de usuario es el que se ve en la obra. Podés cambiarlo cuando quieras.
             </p>
 
@@ -22,7 +22,7 @@
                 <div>
                     <label for="username" class="label">Nombre de usuario</label>
                     <input id="username" name="username" type="text" class="input" value="<%= currentUser.username %>" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" required>
-                    <p class="mt-2 text-xs text-gris">Entre 3 y 20 caracteres: letras, números o guión bajo.</p>
+                    <p class="mt-2 text-xs text-gris dark:text-slate-400">Entre 3 y 20 caracteres: letras, números o guión bajo.</p>
                 </div>
 
                 <div>
@@ -30,22 +30,23 @@
 
                     <div class="mt-2 flex items-center gap-4">
                         <% if (currentUser.foto) { %>
-                            <img src="<%= currentUser.foto %>" alt="Foto de perfil actual de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea object-cover">
+                            <img src="<%= currentUser.foto %>" alt="Foto de perfil actual de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea dark:border-slate-700 object-cover">
                         <% } else { %>
-                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea bg-marfil font-display text-xl">
+                            <!-- Se agregó dark:bg-slate-800 al avatar por defecto -->
+                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea dark:border-slate-700 bg-marfil dark:bg-slate-800 font-display text-xl">
                                 <%= currentUser.username.charAt(0).toUpperCase() %>
                             </span>
                         <% } %>
-                        <p class="text-xs text-gris">Así se ve tu foto hoy. Podés reemplazarla o cargarla con el campo de abajo.</p>
+                        <p class="text-xs text-gris dark:text-slate-400">Así se ve tu foto hoy. Podés reemplazarla o cargarla con el campo de abajo.</p>
                     </div>
 
-                    <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input mt-3 file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil">
-                    <p class="mt-2 text-xs text-gris">JPG, PNG o WebP. Máximo 2 MB. Opcional.</p>
+                    <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" class="input mt-3 file:mr-4 file:rounded-full file:border-0 file:bg-tinta file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-widest file:text-marfil dark:file:bg-slate-700">
+                    <p class="mt-2 text-xs text-gris dark:text-slate-400">JPG, PNG o WebP. Máximo 2 MB. Opcional.</p>
                 </div>
 
-                <div class="border-t border-linea pt-5 mt-5">
+                <div class="border-t border-linea dark:border-slate-700 pt-5 mt-5">
                     <h3 class="text-lg">Cambiar contraseña</h3>
-                    <p class="mt-1 text-xs text-gris mb-4">Completá estos campos solo si querés cambiar tu contraseña actual.</p>
+                    <p class="mt-1 text-xs text-gris dark:text-slate-400 mb-4">Completá estos campos solo si querés cambiar tu contraseña actual.</p>
                     
                     <div class="space-y-4">
                         <div>
@@ -71,23 +72,26 @@
                 <div class="mt-6 space-y-5">
                     <div class="flex items-center gap-4">
                         <% if (currentUser.foto) { %>
-                            <img src="<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea object-cover">
+                            <img src="<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea dark:border-slate-700 object-cover">
                         <% } else { %>
-                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea bg-marfil font-display text-xl">
+                            <!-- Se agregó dark:bg-slate-800 al avatar por defecto -->
+                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea dark:border-slate-700 bg-marfil dark:bg-slate-800 font-display text-xl">
                                 <%= currentUser.username.charAt(0).toUpperCase() %>
                             </span>
                         <% } %>
 
                         <div>
                             <p class="text-sm font-medium">Pez pintado</p>
-                            <p class="flex items-center gap-2 text-xs text-gris">
-                                <span class="inline-block h-3 w-3 rounded-full border border-black/10" style="background-color: <%= currentUser.color %>"></span>
+                            <p class="flex items-center gap-2 text-xs text-gris dark:text-slate-400">
+                                <!-- Se agregó dark:border-white/20 al círculo de color -->
+                                <span class="inline-block h-3 w-3 rounded-full border border-black/10 dark:border-white/20" style="background-color: <%= currentUser.color %>"></span>
                                 <%= currentUser.color %>
                             </p>
                         </div>
                     </div>
 
-                    <p class="rounded-2xl bg-marfil px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
+                    <!-- Se agregó dark:bg-slate-900/50 para oscurecer la caja de la frase en modo oscuro -->
+                    <p class="rounded-2xl bg-marfil dark:bg-slate-900/50 px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
 
                     <div class="flex flex-wrap gap-3">
                         <a href="/user/upload" class="btn">Editar mi voz</a>
@@ -97,7 +101,7 @@
                     </div>
                 </div>
             <% } else { %>
-                <p class="mt-4 text-sm leading-relaxed text-gris">
+                <p class="mt-4 text-sm leading-relaxed text-gris dark:text-slate-400">
                     Todavía no cargaste tu frase ni elegiste el color de tu pez. Tu pez nada en blanco y su voz todavía no aparece en la obra.
                 </p>
                 <a href="/user/upload" class="btn btn-solid mt-6">Cargar mi voz</a>

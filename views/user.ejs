@@ -3,9 +3,9 @@
 <%- include('partials/flash') %>
 
 <main id="contenido">
-    <section class="relative isolate overflow-hidden border-b border-linea">
+    <section class="relative isolate overflow-hidden border-b border-linea dark:border-slate-700">
         <div class="fondo-ola absolute inset-0 opacity-80"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-marfil/10 via-marfil/50 to-marfil"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-marfil/10 via-marfil/50 to-marfil dark:from-slate-900 dark:to-slate-900"></div>
 
         <!-- Se ajustó la altura (min-h-[45vh]) y el padding para compensar los botones eliminados -->
         <div class="relative mx-auto flex min-h-[45vh] max-w-6xl flex-col justify-center px-6 py-16">
@@ -13,7 +13,7 @@
             <h1 class="mt-6 text-5xl leading-[0.95] tracking-tight md:text-7xl">
                 Bienvenid@, <span class="italic"><%= currentUser.username %></span>
             </h1>
-            <p class="mt-6 max-w-xl text-base leading-relaxed text-gris md:text-lg">
+            <p class="mt-6 max-w-xl text-base leading-relaxed text-gris dark:text-slate-400 md:text-lg">
                 Este es tu rincón del océano. Desde acá podés administrar tu perfil, cargar o modificar tu voz y mirar la obra cuando quieras.
             </p>
         </div>
@@ -23,13 +23,13 @@
         <div class="grid gap-6 md:grid-cols-3">
             <a href="/user/profile" class="card group transition duration-200 hover:-translate-y-1">
                 <h2 class="mt-4 text-2xl">Mi perfil</h2>
-                <p class="mt-2 text-sm leading-relaxed text-gris">Revisá y actualizá tu usuario, tu contraseña y tu foto de perfil.</p>
+                <p class="mt-2 text-sm leading-relaxed text-gris dark:text-slate-400">Revisá y actualizá tu usuario, tu contraseña y tu foto de perfil.</p>
                 <span class="mt-6 inline-block text-xs uppercase tracking-[0.18em] group-hover:underline">Abrir perfil →</span>
             </a>
 
             <a href="/user/upload" class="card group transition duration-200 hover:-translate-y-1">
                 <h2 class="mt-4 text-2xl">Mi voz</h2>
-                <p class="mt-2 text-sm leading-relaxed text-gris">Elegí tu frase y el color de tu pez.<br> Si ya lo hiciste, podés modificarlo.</p>
+                <p class="mt-2 text-sm leading-relaxed text-gris dark:text-slate-400">Elegí tu frase y el color de tu pez.<br> Si ya lo hiciste, podés modificarlo.</p>
                 <span class="mt-6 inline-block text-xs uppercase tracking-[0.18em] group-hover:underline">
                     <%= currentUser.tieneVoz ? 'Editar mi voz' : 'Cargar mi voz' %> →
                 </span>
@@ -37,7 +37,7 @@
 
             <a href="/obra" class="card group transition duration-200 hover:-translate-y-1">
                 <h2 class="mt-4 text-2xl">La obra</h2>
-                <p class="mt-2 text-sm leading-relaxed text-gris">Mirá el cardumen y encontrá las voces de la comunidad.</p>
+                <p class="mt-2 text-sm leading-relaxed text-gris dark:text-slate-400">Mirá el cardumen y encontrá las voces de la comunidad.</p>
                 <span class="mt-6 inline-block text-xs uppercase tracking-[0.18em] group-hover:underline">Entrar al océano →</span>
             </a>
         </div>

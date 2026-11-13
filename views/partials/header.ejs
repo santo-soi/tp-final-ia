@@ -1,38 +1,58 @@
-<header class="sticky top-0 z-40 border-b border-linea/70 bg-marfil/85 backdrop-blur">
-    <!-- Se cambió max-w-6xl por w-full y se ajustó el padding a px-6 md:px-10 -->
+<header class="sticky top-0 z-40 border-b border-linea/70 bg-marfil/85 backdrop-blur dark:bg-slate-900/90 dark:border-slate-800">
     <div class="mx-auto flex w-full items-center justify-between gap-4 px-6 py-4 md:px-10">
         
+        <!-- Bloque Izquierdo: Logo -->
         <a href="/" class="flex items-center gap-3">
-            <span class="flex h-8 w-8 items-center justify-center rounded-full border border-tinta">
-                <span class="block h-3 w-3 rounded-full bg-tinta"></span>
+            <span class="flex h-8 w-8 items-center justify-center rounded-full border border-tinta dark:border-marfil">
+                <span class="block h-3 w-3 rounded-full bg-tinta dark:bg-marfil"></span>
             </span>
-            <span class="font-display text-xl tracking-tight">Océano de Voces</span>
+            <span class="font-display text-xl tracking-tight dark:text-marfil">Océano de Voces</span>
         </a>
 
-        <nav class="hidden items-center gap-6 md:flex">
-            <a href="/obra" class="nav-link <%= currentPath.startsWith('/obra') ? 'nav-link-active' : '' %>">La obra</a>
-            <a href="/about" class="nav-link <%= currentPath.startsWith('/about') ? 'nav-link-active' : '' %>">El proyecto</a>
+        <!-- Bloque Derecho: Navegación + Botón -->
+        <div class="flex items-center gap-4 md:gap-8">
             
-            <% if (currentUser) { %>
-                <a href="/user/upload" class="nav-link <%= currentPath.startsWith('/user/upload') ? 'nav-link-active' : '' %>">Mi voz</a>
-                <a href="/user" class="nav-link <%= currentPath === '/user' ? 'nav-link-active' : '' %>">Mi espacio</a>
-                <a href="/user/logout" class="btn btn-ghost !px-4 !py-2">Salir</a>
-            <% } else { %>
-                <a href="/login" class="nav-link <%= currentPath.startsWith('/login') ? 'nav-link-active' : '' %>">Ingresar</a>
-                <a href="/signup" class="btn !px-5 !py-2">Registrarme</a>
-            <% } %>
-        </nav>
+            <!-- Navegación de Escritorio -->
+            <nav class="hidden items-center gap-6 md:flex dark:text-marfil">
+                <a href="/obra" class="nav-link <%= currentPath.startsWith('/obra') ? 'nav-link-active' : '' %>">La obra</a>
+                <a href="/about" class="nav-link <%= currentPath.startsWith('/about') ? 'nav-link-active' : '' %>">El proyecto</a>
+                
+                <% if (currentUser) { %>
+                    <a href="/user/upload" class="nav-link <%= currentPath.startsWith('/user/upload') ? 'nav-link-active' : '' %>">Mi voz</a>
+                    <a href="/user" class="nav-link <%= currentPath === '/user' ? 'nav-link-active' : '' %>">Mi espacio</a>
+                    <a href="/user/logout" class="btn btn-ghost !px-4 !py-2 dark:border-marfil/50 dark:hover:bg-marfil/10">Salir</a>
+                <% } else { %>
+                    <a href="/login" class="nav-link <%= currentPath.startsWith('/login') ? 'nav-link-active' : '' %>">Ingresar</a>
+                    <a href="/signup" class="btn !px-5 !py-2">Registrarme</a>
+                <% } %>
+            </nav>
 
-        <nav class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 md:hidden">
-            <a href="/obra" class="nav-link">Obra</a>
-            <% if (currentUser) { %>
-                <a href="/user" class="nav-link">Mi espacio</a>
-                <a href="/user/upload" class="nav-link">Mi voz</a>
-                <a href="/user/logout" class="nav-link">Salir</a>
-            <% } else { %>
-                <a href="/login" class="nav-link">Ingresar</a>
-                <a href="/signup" class="nav-link">Registro</a>
-            <% } %>
-        </nav>
+            <!-- Botón Dark Mode -->
+            <button id="theme-toggle" type="button" class="rounded-full p-2 text-gris transition-colors hover:bg-tinta/10 dark:text-marfil dark:hover:bg-marfil/10">
+                <!-- Ícono de Luna (Modo claro) - visible por defecto -->
+                <svg id="theme-toggle-dark-icon" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+                <!-- Ícono de Sol (Modo oscuro) - oculto por defecto -->
+                <!-- Ícono de Sol (Modo oscuro) - oculto por defecto -->
+                <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM10 15a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 15zM10 7a3 3 0 100 6 3 3 0 000-6zM15.657 5.404a.75.75 0 10-1.06-1.06l-1.061 1.06a.75.75 0 001.06 1.06l1.06-1.06zM6.464 14.596a.75.75 0 10-1.06-1.06l-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0118 10zM5 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 015 10zM14.596 15.657a.75.75 0 001.06-1.06l-1.06-1.061a.75.75 0 10-1.06 1.06l1.06 1.06zM5.404 6.464a.75.75 0 001.06-1.06l-1.06-1.06a.75.75 0 10-1.06 1.061l1.06 1.06z" />
+                </svg>
+            </button>
+
+            <!-- Navegación de Celulares  -->
+            <nav class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 md:hidden dark:text-marfil">
+                <a href="/obra" class="nav-link">Obra</a>
+                <% if (currentUser) { %>
+                    <a href="/user" class="nav-link">Mi espacio</a>
+                    <a href="/user/upload" class="nav-link">Mi voz</a>
+                    <a href="/user/logout" class="nav-link">Salir</a>
+                <% } else { %>
+                    <a href="/login" class="nav-link">Ingresar</a>
+                    <a href="/signup" class="nav-link">Registro</a>
+                <% } %>
+            </nav>
+
+        </div>
     </div>
 </header>
