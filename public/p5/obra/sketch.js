@@ -18,12 +18,12 @@ function setup() {
   cardumen = new Cardumen(usuarios);
   campo = new Campo(width, height);
   campo.generarParticulas();
-  background(245, 242, 235);
 }
 
 function draw() {
-  cardumen.dibujarContenido();
+  background(245, 242, 235);
   campo.dibujarCampo();
+  cardumen.dibujarContenido();
 }
 
 // Detecta el clic en cualquier parte del canvas: se muestra la voz del

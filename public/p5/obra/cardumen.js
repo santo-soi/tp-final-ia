@@ -67,7 +67,7 @@ class Pez {
         // Offsets independientes para que cada pez tenga un movimiento de noise único
         this.xOff = random(1000);
         this.yOff = random(2000);
-        this.velocidad = 1.2; // Qué tan rápido se desplazan
+        this.velocidad = 4; // Qué tan rápido se desplazan
         this.angulo = 0; //Ángulo de rotación del pez
     }
 
@@ -77,7 +77,6 @@ class Pez {
     }
 
     actualizar() { //posición del pez por c/ frame
-
         // Generamos desplazamiento suave y orgánico usando Perlin Noise
         let vx = map(noise(this.xOff), 0, 1, -this.velocidad, this.velocidad);
         let vy = map(noise(this.yOff), 0, 1, -this.velocidad, this.velocidad);
@@ -87,13 +86,13 @@ class Pez {
         this.xOff += 0.008;
         this.yOff += 0.008;
         // Calculamos la rotación del pez según hacia dónde se está moviendo
-        this.angulo = atan2(vy, vx);
+        this.angulo =atan2(vy, vx);
         // Cambia su rumbo si toca el borde
         let margen = 50; 
-        if (this.x < margen) this.x = margen; this.xOff += 10; 
-        if (this.x > width - margen) this.x = width - margen; this.xOff += 10;
-        if (this.y < margen)  this.y = margen; this.yOff += 10;
-        if (this.y > height - margen) this.y = height - margen; this.yOff += 10;
+        if (this.x < margen) {this.x = margen; this.xOff += 10;};
+        if (this.x > width - margen) {this.x = width - margen; this.xOff += 10;};
+        if (this.y < margen) {this.y = margen; this.yOff += 10;};
+        if (this.y > height - margen) {this.y = height - margen; this.yOff += 10;};
     }
 
     dibujarFormaPez() { // Forma del pez a dibujar.
@@ -109,7 +108,7 @@ class Pez {
     dibujar(seleccionado) {
         push();
         translate(this.x, this.y);
-        rotate(radians(this.angulo)); //rota el pez alrededor de su propio centro
+        rotate(this.angulo); //rota el pez alrededor de su propio centro
         // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
         // si todavía no la cargó, permanece en blanco.
         if (this.tieneVoz() && seleccionado) fill(this.color); else fill(255);
