@@ -1,8 +1,7 @@
-let campo;
+let sistemaFiguras;
 let cardumen;
 let contenedor;
 let timeoutVineta;
-let capaFondo;
 
 function setup() {
   contenedor = document.getElementById("contenedor-canvas-p5");
@@ -12,36 +11,26 @@ function setup() {
   const lienzo = createCanvas(ancho, alto);
   lienzo.parent("contenedor-canvas-p5");
 
-  // Capa persistente donde se dibuja la textura de corrientes sin borrarla
-  capaFondo = createGraphics(ancho, alto);
-  iniciarFondo();
-
   const usuarios = window.usuariosObra || [];
   cardumen = new Cardumen(usuarios);
 
-  campo = new Campo(ancho, alto);
-  campo.generarParticulas();
-}
-
-function iniciarFondo() {
-  const esOscuro = document.documentElement.classList.contains("dark");
-  if (esOscuro) {
-    capaFondo.background(15, 23, 42); // slate-900 (#0f172a)
-  } else {
-    capaFondo.background(242, 250, 252); // Cian muy clarito, apenas separado del blanco
-  }
+  sistemaFiguras = new SistemaFiguras();
 }
 
 function draw() {
   const esOscuro = document.documentElement.classList.contains("dark");
 
-  // 1. Las partículas dibujan sobre la capa persistente
-  campo.dibujarCampo(capaFondo, esOscuro);
+  // Mismo celeste/cian muy clarito de la versión 1 (y compatibilidad con modo oscuro)
+  if (esOscuro) {
+    background(15, 23, 42); // slate-900 (#0f172a)
+  } else {
+    background(242, 250, 252);
+  }
 
-  // 2. Estampamos la capa del fondo en el canvas principal (esto borra la estela de los peces)
-  image(capaFondo, 0, 0);
+  // 1. Figuras geométricas gigantes flotando en el fondo
+  sistemaFiguras.actualizarYMostrar(esOscuro);
 
-  // 3. Dibujamos los peces limpios por encima
+  // 2. Peces idénticos a la versión 1
   cardumen.dibujarContenido(esOscuro);
 }
 
@@ -84,12 +73,5 @@ function mostrarVineta(pez) {
 }
 
 function windowResized() {
-  let ancho = contenedor.clientWidth;
-  let alto = contenedor.clientHeight;
-  resizeCanvas(ancho, alto);
-
-  // Redimensiona la capa de fondo manteniendo lo dibujado
-  let nuevaCapa = createGraphics(ancho, alto);
-  nuevaCapa.image(capaFondo, 0, 0);
-  capaFondo = nuevaCapa;
+  resizeCanvas(contenedor.clientWidth, contenedor.clientHeight);
 }

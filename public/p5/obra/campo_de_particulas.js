@@ -1,52 +1,49 @@
-class Campo {
-  constructor(w, h) {
-    this.escala = 30;
-    this.inc = 0.05; // Un poco más amplio para curvas más suaves
-    this.zOff = 0;
-    this.zOffInc = 0.0015; // Evoluciona más rápido para que los "ríos" se muevan y no marquen siempre el mismo surco
-    this.cols = ceil(w / this.escala);
-    this.filas = ceil(h / this.escala);
-    this.particulas = [];
-    this.corrientes = [];
-  }
+class SistemaFiguras {
+  constructor() {
+    this.figuras = [];
+    this.maxFiguras = 8;
+    this.ultimoSpawn = 0;
+    this.intervaloSpawn = 3200; // Cada ~3.2 segundos puede entrar una figura nueva
 
-  generarParticulas() {
-    for (let i = 0; i < 160; i++) {
-      this.particulas[i] = new Particula();
+    // Generamos 3 figuras iniciales entrando desde los bordes para que no arranque vacío
+    for (let i = 0; i < 3; i++) {
+      this.figuras.push(new FiguraGeometrica(true));
     }
   }
 
-  dibujarCampo(pg, esOscuro) {
-    let yOff = 0;
-    for (let y = 0; y < this.filas; y++) {
-      let xOff = 0;
-      for (let x = 0; x < this.cols; x++) {
-        let indiceCorriente = x + y * this.cols;
-        let r = noise(xOff, yOff, this.zOff) * TWO_PI * 2;
-        let v = p5.Vector.fromAngle(r);
-        v.setMag(0.08);
-        this.corrientes[indiceCorriente] = v;
-        xOff += this.inc;
+  actualizarYMostrar(esOscuro) {
+    // Genera nuevas figuras aleatoriamente desde afuera
+    if (
+      this.figuras.length < this.maxFiguras &&
+      millis() - this.ultimoSpawn > this.intervaloSpawn
+    ) {
+      if (random() < 0.65) {
+        this.figuras.push(new FiguraGeometrica(false));
       }
-      yOff += this.inc;
+      this.ultimoSpawn = millis();
     }
-    this.zOff += this.zOffInc;
 
-    for (let particula of this.particulas) {
-      particula.seguirVector(this.escala, this.cols, this.filas, this.corrientes);
-      particula.actualizar();
-      particula.fronteras();
-      particula.mostrarParticula(pg, esOscuro);
+    // Actualiza, dibuja y elimina las que ya terminaron de cruzar la pantalla
+    for (let i = this.figuras.length - 1; i >= 0; i--) {
+      let fig = this.figuras[i];
+      fig.actualizar();
+      fig.mostrar(esOscuro);
+
+      if (fig.salioDePantalla()) {
+        this.figuras.splice(i, 1);
+      }
     }
   }
 }
 
-class Particula {
-  constructor() {
-    this.historial = [];
-    this.maxLongitudHistorial = 20;
-    this.maxVel = 2.0;
+class FiguraGeometrica {
+  constructor(arranqueInicial = false) {
+    // Tamaño enorme relativo al lienzo
+    const base = min(width, height);
+    this.tamano = random(base * 0.35, base * 0.72);
+    this.radioExterior = this.tamano * 0.6;
 
+    // Misma paleta acuática que la versión 1
     const paleta = [
       [6, 182, 212],   // Cian medio
       [34, 211, 238],  // Cian claro / agua
@@ -56,69 +53,113 @@ class Particula {
       [129, 140, 248]  // Lavanda azulado suave
     ];
     this.color = random(paleta);
-    this.reiniciar();
-  }
+    this.alfa = random(11, 20); // Muy poca opacidad para que al superponerse creen veladuras
 
-  // Ubica la partícula en un punto nuevo al azar con vida renovada
-  reiniciar() {
-    this.pos = createVector(random(width), random(height));
-    this.vel = createVector(0, 0);
-    this.acel = createVector(0, 0);
-    this.historial = [];
-    this.vida = random(720, 1680);
+    // Tipo de figura geométrica
+    this.tipo = random(["circulo", "triangulo", "cuadrado", "hexagono"]);
+
+    // Elegimos un borde de entrada al azar (0: izq, 1: der, 2: arriba, 3: abajo)
+    const borde = floor(random(4));
+    // Si es arranque inicial, las ubicamos apenas asomando en el borde
+    const offsetEntrada = arranqueInicial
+      ? this.radioExterior * 0.45
+      : this.radioExterior + 20;
+
+    let objetivo;
+    if (borde === 0) {
+      this.pos = createVector(-offsetEntrada, random(height));
+      objetivo = createVector(width * 0.75, random(height * 0.15, height * 0.85));
+    } else if (borde === 1) {
+      this.pos = createVector(width + offsetEntrada, random(height));
+      objetivo = createVector(width * 0.25, random(height * 0.15, height * 0.85));
+    } else if (borde === 2) {
+      this.pos = createVector(random(width), -offsetEntrada);
+      objetivo = createVector(random(width * 0.15, width * 0.85), height * 0.75);
+    } else {
+      this.pos = createVector(random(width), height + offsetEntrada);
+      objetivo = createVector(random(width * 0.15, width * 0.85), height * 0.25);
+    }
+
+    // Dirección principal casi recta y velocidad muy lenta
+    this.velBase = p5.Vector.sub(objetivo, this.pos);
+    this.velBase.normalize();
+    this.velocidad = random(0.22, 0.45);
+    this.velBase.mult(this.velocidad);
+
+    // Parámetros para la leve deriva orgánica (como el nado suave inicial)
+    this.noiseOff = random(1000);
+    this.angulo = random(TWO_PI);
+    this.velRotacion = random(-0.0012, 0.0012);
+    this.entroEnPantalla = false;
   }
 
   actualizar() {
-    this.vel.add(this.acel);
-    this.vel.mult(0.95); // Leve fricción para que siga la corriente sin salir disparada
-    this.vel.limit(this.maxVel);
-    this.pos.add(this.vel);
-    this.acel.mult(0);
+    // Leve ondulación perpendicular al rumbo principal usando Perlin Noise
+    let perpendicular = createVector(-this.velBase.y, this.velBase.x).normalize();
+    let deriva = map(noise(this.noiseOff), 0, 1, -0.18, 0.18);
+    perpendicular.mult(deriva);
 
-    this.historial.push(this.pos.copy());
-    if (this.historial.length > this.maxLongitudHistorial) {
-      this.historial.shift();
-    }
+    this.pos.add(this.velBase);
+    this.pos.add(perpendicular);
 
-    // Descontamos vida; si llega a 0, salta a una zona nueva del lienzo
-    this.vida--;
-    if (this.vida <= 0) {
-      this.reiniciar();
+    this.noiseOff += 0.004;
+    this.angulo += this.velRotacion;
+
+    // Marcamos cuando ya pisó el área visible para saber cuándo descartarla al salir
+    if (
+      this.pos.x > 0 &&
+      this.pos.x < width &&
+      this.pos.y > 0 &&
+      this.pos.y < height
+    ) {
+      this.entroEnPantalla = true;
     }
   }
 
-  seguirVector(escala, columnas, filas, corrientes) {
-    let x = constrain(floor(this.pos.x / escala), 0, columnas - 1);
-    let y = constrain(floor(this.pos.y / escala), 0, filas - 1);
-    let indice = x + y * columnas;
-    let fuerza = corrientes[indice];
-    if (fuerza) this.acel.add(fuerza);
+  salioDePantalla() {
+    if (!this.entroEnPantalla) return false;
+    const margenSalida = this.radioExterior + 40;
+    return (
+      this.pos.x < -margenSalida ||
+      this.pos.x > width + margenSalida ||
+      this.pos.y < -margenSalida ||
+      this.pos.y > height + margenSalida
+    );
   }
 
-  mostrarParticula(pg, esOscuro) {
-    if (this.historial.length < 2) return;
+  mostrar(esOscuro) {
+    push();
+    translate(this.pos.x, this.pos.y);
+    rotate(this.angulo);
+    noStroke();
 
-    pg.noFill();
-    let alfa = esOscuro ? 10 : 7;
-    pg.stroke(this.color[0], this.color[1], this.color[2], alfa);
-    pg.strokeWeight(1.3);
+    let alfaFinal = esOscuro ? this.alfa * 1.3 : this.alfa;
+    fill(this.color[0], this.color[1], this.color[2], alfaFinal);
 
-    pg.beginShape();
-    for (let v of this.historial) {
-      pg.curveVertex(v.x, v.y);
+    const s = this.tamano;
+
+    if (this.tipo === "circulo") {
+      circle(0, 0, s);
+    } else if (this.tipo === "cuadrado") {
+      rectMode(CENTER);
+      rect(0, 0, s * 0.85, s * 0.85, 28); // Esquinas suavemente redondeadas
+    } else if (this.tipo === "triangulo") {
+      const r = s * 0.55;
+      triangle(
+        cos(-HALF_PI) * r, sin(-HALF_PI) * r,
+        cos(-HALF_PI + TWO_PI / 3) * r, sin(-HALF_PI + TWO_PI / 3) * r,
+        cos(-HALF_PI + (TWO_PI * 2) / 3) * r, sin(-HALF_PI + (TWO_PI * 2) / 3) * r
+      );
+    } else if (this.tipo === "hexagono") {
+      const r = s * 0.5;
+      beginShape();
+      for (let i = 0; i < 6; i++) {
+        let a = (TWO_PI / 6) * i;
+        vertex(cos(a) * r, sin(a) * r);
+      }
+      endShape(CLOSE);
     }
-    pg.endShape();
-  }
 
-  fronteras() {
-    let atravesoBorde = false;
-    if (this.pos.x < 0) { this.pos.x = width; atravesoBorde = true; }
-    if (this.pos.x > width) { this.pos.x = 0; atravesoBorde = true; }
-    if (this.pos.y < 0) { this.pos.y = height; atravesoBorde = true; }
-    if (this.pos.y > height) { this.pos.y = 0; atravesoBorde = true; }
-
-    if (atravesoBorde) {
-      this.historial = [];
-    }
+    pop();
   }
 }
