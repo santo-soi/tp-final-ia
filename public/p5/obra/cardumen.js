@@ -39,6 +39,7 @@ class Cardumen {
         return null;
     }
 
+    // -------------------------------------------------------Lo que será mostrado en pantalla
     // Recorre `this.peces` para actualizar y dibujar cada pez.
     dibujarContenido() {
         this.gestionarSeleccion();
@@ -67,7 +68,7 @@ class Pez {
         // Offsets independientes para que cada pez tenga un movimiento de noise único
         this.xOff = random(1000);
         this.yOff = random(2000);
-        this.velocidad = 1.2; // Qué tan rápido se desplazan
+        this.velocidad = 4; // Qué tan rápido se desplazan
         this.angulo = 0; //Ángulo de rotación del pez
     }
 
@@ -77,7 +78,6 @@ class Pez {
     }
 
     actualizar() { //posición del pez por c/ frame
-
         // Generamos desplazamiento suave y orgánico usando Perlin Noise
         let vx = map(noise(this.xOff), 0, 1, -this.velocidad, this.velocidad);
         let vy = map(noise(this.yOff), 0, 1, -this.velocidad, this.velocidad);
@@ -87,13 +87,13 @@ class Pez {
         this.xOff += 0.008;
         this.yOff += 0.008;
         // Calculamos la rotación del pez según hacia dónde se está moviendo
-        this.angulo = atan2(vy, vx);
+        this.angulo =atan2(vy, vx);
         // Cambia su rumbo si toca el borde
         let margen = 50; 
-        if (this.x < margen) this.x = margen; this.xOff += 10; 
-        if (this.x > width - margen) this.x = width - margen; this.xOff += 10;
-        if (this.y < margen)  this.y = margen; this.yOff += 10;
-        if (this.y > height - margen) this.y = height - margen; this.yOff += 10;
+        if (this.x < margen) {this.x = margen; this.xOff += 10;};
+        if (this.x > width - margen) {this.x = width - margen; this.xOff += 10;};
+        if (this.y < margen) {this.y = margen; this.yOff += 10;};
+        if (this.y > height - margen) {this.y = height - margen; this.yOff += 10;};
     }
 
     dibujarFormaPez() { // Forma del pez a dibujar.
@@ -106,13 +106,44 @@ class Pez {
         circle(s * 0.25, -s * 0.07, s * 0.07);
     }
 
+    // Manipula el HTML de la viñeta
+    mostrarVineta() {
+            let divVineta = document.getElementById("vineta-frase");
+            let imgFoto = document.getElementById("vineta-foto");
+            let spanUsuario = document.getElementById("vineta-usuario");
+            let pTexto = document.getElementById("vineta-texto");
+            // Inyecta los datos del pez activo
+            spanUsuario.textContent = this.usuario;
+            pTexto.textContent = `“${this.frase}”`;
+            // Muestra la foto de perfil si el usuario la subió
+            if (this.foto) {
+            imgFoto.src = this.foto;
+            imgFoto.alt = `Foto de perfil de ${this.usuario}`;
+            imgFoto.classList.remove("hidden");
+            } else {
+            imgFoto.removeAttribute("src");
+            imgFoto.alt = "";
+            imgFoto.classList.add("hidden");
+            }
+            // Muestra la viñeta agregando la clase de opacidad
+            divVineta.classList.remove("opacity-0");
+            divVineta.classList.add("opacity-100");
+            // Se desvanece automáticamente después de 6 segundos.
+            // Si hay un clic nuevo antes, se reinicia el conteo.
+            clearTimeout(timeoutVineta);
+            timeoutVineta = setTimeout(() => {
+            divVineta.classList.remove("opacity-100");
+            divVineta.classList.add("opacity-0");
+            }, 6000);
+    }
+
     dibujar(seleccionado) {
         push();
         translate(this.x, this.y);
-        rotate(radians(this.angulo)); //rota el pez alrededor de su propio centro
+        rotate(this.angulo); //rota el pez alrededor de su propio centro
         // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
         // si todavía no la cargó, permanece en blanco.
-        if (this.tieneVoz() && seleccionado) fill(this.color); else fill(255);
+        if (this.tieneVoz() && seleccionado) {fill(this.color); this.mostrarVineta()} else fill(255);
         stroke(0);
         strokeWeight(2);
         this.dibujarFormaPez();

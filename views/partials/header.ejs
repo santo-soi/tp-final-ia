@@ -1,25 +1,32 @@
 <header class="sticky top-0 z-40 border-b border-linea/70 bg-marfil/85 backdrop-blur dark:bg-slate-900/90 dark:border-slate-800">
-    <div class="mx-auto flex w-full items-center justify-between gap-4 px-6 py-4 md:px-10">
+    <div class="mx-auto flex w-full items-center justify-between gap-4 px-6 py-4 md:px-16">
         
-        <!-- Bloque Izquierdo: Logo -->
-        <a href="/" class="flex items-center gap-3">
-            <span class="flex h-8 w-8 items-center justify-center rounded-full border border-tinta dark:border-marfil">
-                <span class="block h-3 w-3 rounded-full bg-tinta dark:bg-marfil"></span>
-            </span>
-            <span class="font-display text-xl tracking-tight dark:text-marfil">Océano de Voces</span>
-        </a>
+        <div class="flex items-center gap-3 md:ml-16">
+            <!-- Bloque Izquierdo: Logo -->
+            <% if (currentUser) { %>
+            <a href="/user" >
+            <% } else { %>
+            <a href="/" >
+            <% } %>
+                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-tinta dark:border-marfil">
+                    <span class="block h-3 w-3 rounded-full bg-tinta dark:bg-marfil"></span>
+                </span>
+            
+            </a>
+        </div>
+       
+            
 
         <!-- Bloque Derecho: Navegación + Botón -->
         <div class="flex items-center gap-4 md:gap-8">
             
             <!-- Navegación de Escritorio -->
             <nav class="hidden items-center gap-6 md:flex dark:text-marfil">
-                <a href="/obra" class="nav-link <%= currentPath.startsWith('/obra') ? 'nav-link-active' : '' %>">La obra</a>
-                <a href="/about" class="nav-link <%= currentPath.startsWith('/about') ? 'nav-link-active' : '' %>">El proyecto</a>
+                <a href="/obra" class="nav-link <%= currentPath.startsWith('/obra') ? 'nav-link-active' : '' %>">El océano</a>
+                <a href="/about" class="nav-link <%= currentPath.startsWith('/about') ? 'nav-link-active' : '' %>">Bio</a>
                 
                 <% if (currentUser) { %>
                     <a href="/user/upload" class="nav-link <%= currentPath.startsWith('/user/upload') ? 'nav-link-active' : '' %>">Mi voz</a>
-                    <a href="/user" class="nav-link <%= currentPath === '/user' ? 'nav-link-active' : '' %>">Mi espacio</a>
                     <a href="/user/logout" class="btn btn-ghost !px-4 !py-2 dark:border-marfil/50 dark:hover:bg-marfil/10">Salir</a>
                 <% } else { %>
                     <a href="/login" class="nav-link <%= currentPath.startsWith('/login') ? 'nav-link-active' : '' %>">Ingresar</a>

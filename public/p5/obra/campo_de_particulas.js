@@ -16,7 +16,7 @@ class Campo {
         }
     }
 
-    dibujarCampo(){
+    dibujarCampo(pg){
         let yOff = 0;
         stroke(0, 50);
         strokeWeight(1);
@@ -44,7 +44,7 @@ class Campo {
              particula.seguirVector(this.escala, this.cols, this.corrientes);
              particula.actualizar();
              particula.fronteras();
-             particula.mostrarParticula();
+             particula.mostrarParticula(pg);
         }
     }
 }
@@ -52,11 +52,10 @@ class Campo {
 class Particula {
     constructor(){
         this.pos = createVector(random(width), random(height));
+        this.posBase = this.pos.copy();
         this.vel = createVector(0,0);
         this.maxVel = 5;
         this.acel = createVector(0,0); 
-        this.historial = [];
-        this.maxLongitudHistorial = 18;
     }
 
     actualizar(){
@@ -64,8 +63,6 @@ class Particula {
         this.vel.limit(this.maxVel);
         this.pos.add(this.vel);
         this.acel.mult(0);
-        this.historial.push(this.pos.copy()); // Guardamos la posición actual en el historial
-        if (this.historial.length > this.maxLongitudHistorial) this.historial.shift(); // Si el historial supera el límite, borramos el punto más viejo
     }
 
     seguirVector(escala, columnas, corrientes){
@@ -85,21 +82,18 @@ class Particula {
         this.acel.add(fuerza);
     }
 
-    mostrarParticula(){
-        stroke(0, 5);
-        strokeWeight(5);
-        //point(this.pos.x, this.pos.y);
-        //line(this.pos.x, this.pos.y, this.posBase.x, this.posBase.y);
-
-        beginShape();
-        for (let v of this.historial) {
-            vertex(v.x, v.y); 
-            // Nota: Si querés que las curvas sean aún más suaves, 
-            // podés cambiar `vertex` por `curveVertex`
-        }
-        endShape();
-
-        //this.actualizarBase();
+    mostrarParticula(pg){
+        // stroke(0, 5);
+        // strokeWeight(5);
+        // //point(this.pos.x, this.pos.y);
+        // line(this.pos.x, this.pos.y, this.posBase.x, this.posBase.y);
+        // this.actualizarBase();
+        pg.noFill();
+        pg.stroke(0, 45); // Tono oscuro y semitransparente para las olas de fondo
+        pg.strokeWeight(1.5);
+        pg.line(this.pos.x, this.pos.y, this.posBase.x, this.posBase.y);
+        this.actualizarBase();
+      
     }
 
     actualizarBase(){
@@ -108,15 +102,10 @@ class Particula {
     }
 
     fronteras(){
-       let atravesoBorde = false;
-        if (this.pos.x < 0) { this.pos.x = width; atravesoBorde = true; }
-        if (this.pos.x > width) { this.pos.x = 0; atravesoBorde = true; }
-        if (this.pos.y < 0) { this.pos.y = height; atravesoBorde = true; }
-        if (this.pos.y > height) { this.pos.y = 0; atravesoBorde = true; }
-
-        if (atravesoBorde) {
-            this.historial = [];
-            this.historial.push(this.pos.copy());
-        }
+       
+        if (this.pos.x < 0) { this.pos.x = width; this.actualizarBase() }
+        if (this.pos.x > width) { this.pos.x = 0; this.actualizarBase() }
+        if (this.pos.y < 0) { this.pos.y = height; this.actualizarBase() }
+        if (this.pos.y > height) { this.pos.y = 0; this.actualizarBase() }
     }
 }

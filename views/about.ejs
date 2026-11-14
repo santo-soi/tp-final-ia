@@ -4,13 +4,16 @@
 
 <main id="contenido" class="mx-auto max-w-6xl px-6 py-16">
     <div class="max-w-3xl">
-        <p class="eyebrow">El proyecto</p>
+        <p class="eyebrow">Sobre el sitio</p>
         <h1 class="mt-4 text-5xl leading-tight md:text-7xl">
             Un espacio que se<br>
-            <span class="italic">construye entre todes.</span>
+            <span class="italic">construye entre tod@s.</span>
         </h1>
         <p class="mt-8 text-base leading-relaxed text-gris dark:text-slate-400 md:text-lg">
-            Océano de Voces es una obra de arte colaborativa. Cada persona registrada tiene un pez dentro de un cardumen. Cuando carga su voz, elige una frase y un color. Al hacer clic en el océano, la voz del pez iluminado se hace presente.
+            Océano de Voces es una obra de arte colaborativa, donde cada persona registrada<br> tiene un pez propio 
+            dentro del cardumen que nada en <a href="/obra"><span class="text-cian hover:underline">El Océano</span></a>. <br>
+            Podrán darles voz, cargando una frase y un color desde "mi voz" y, cada 10 segundos,<br>
+            se iluminará un pez aleatorio con sus palabras. 
         </p>
     </div>
 
@@ -38,7 +41,7 @@
     </div>
 
     <div class="mt-10 flex flex-wrap gap-3">
-        <a href="/obra" class="btn btn-solid">Ver la obra</a>
+        <a href="/obra" class="btn btn-solid bg-cian bg-opacity-60 text-violeta hover:text-white hover:bg-indigo">A nadar</a>
         <% if (currentUser) { %>
             <a href="/user" class="btn">Ir a mi espacio</a>
         <% } else { %>

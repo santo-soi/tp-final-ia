@@ -11,7 +11,7 @@ function isLogged(req, res, next) {
     if (req.session.user) {
         next();
     } else {
-        req.session.error = 'Para entrar al océano hay que ser parte del cardumen.';
+        req.session.error = 'Para entrar al océano, primero hay que formar parte del cardumen.';
         res.redirect('/login');
     }
 }
