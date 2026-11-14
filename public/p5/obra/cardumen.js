@@ -1,121 +1,182 @@
 class Cardumen {
-    // Recibe los usuarios registrados que llegan desde la base de datos
-    // (una fila por usuario de la tabla users) y crea un pez por cada uno.
-    // Si no hay usuarios, no se dibuja ningún pez.
-    constructor(usuarios) {
-        this.peces = []; // Array donde se guardarán los peces
-        this.indiceSeleccionado = -1;
-        this.tiempoUltimoCambio = 0;
-        this.crearPeces(usuarios);
+  constructor(usuarios) {
+    this.peces = [];
+    this.indiceSeleccionado = -1;
+    this.tiempoUltimoCambio = 0;
+    this.crearPeces(usuarios);
+  }
+
+  crearPeces(usuarios = []) {
+    this.peces = [];
+    for (let i = 0; i < usuarios.length; i++) {
+      let x = random(80, width - 80);
+      let y = random(80, height - 80);
+      let pez = new Pez(x, y, 48, usuarios[i]);
+      this.peces.push(pez);
     }
+    // Selecciona un pez con voz apenas arranca si existe alguno
+    this.seleccionarSiguiente();
+  }
 
-    // -------------------------------------------------------Desarrollo del contenido que será mostrado en pantalla
+  seleccionarSiguiente() {
+    if (this.peces.length === 0) return;
+    // Prioriza peces que tengan voz cargada para que siempre haya uno iluminado
+    const conVoz = this.peces
+      .map((p, idx) => ({ p, idx }))
+      .filter(item => item.p.tieneVoz());
 
-    // Crea los peces del cardumen y los guarda en el array `this.peces`.
-    crearPeces(usuarios = []) {
-        this.peces = []; // Limpiamos por si se re-ejecuta
-
-        for (let i = 0; i < usuarios.length; i++) {
-            let x = random(60, width - 60);
-            let y = random(60, height - 60);
-            let pez = new Pez(x, y, 120 * 0.42, usuarios[i]);
-            this.peces.push(pez);
-        }
+    if (conVoz.length > 0) {
+      const elegido = random(conVoz);
+      this.indiceSeleccionado = elegido.idx;
+    } else {
+      this.indiceSeleccionado = floor(random(this.peces.length));
     }
+    this.tiempoUltimoCambio = millis();
+  }
 
-    gestionarSeleccion() {
-        if (millis() - this.tiempoUltimoCambio > 10000) {
-            this.indiceSeleccionado = floor(random(this.peces.length));
-            this.tiempoUltimoCambio = millis();
-        }
-        return this.indiceSeleccionado;
+  gestionarSeleccion() {
+    if (millis() - this.tiempoUltimoCambio > 10000) {
+      this.seleccionarSiguiente();
     }
+    return this.indiceSeleccionado;
+  }
 
-    // Devuelve el pez que está iluminado actualmente
-    getPezActivo() {
-        if (this.indiceSeleccionado >= 0 && this.indiceSeleccionado < this.peces.length) {
-            return this.peces[this.indiceSeleccionado];
-        }
-        return null;
+  getPezActivo() {
+    if (this.indiceSeleccionado >= 0 && this.indiceSeleccionado < this.peces.length) {
+      return this.peces[this.indiceSeleccionado];
     }
+    return null;
+  }
 
-    // Recorre `this.peces` para actualizar y dibujar cada pez.
-    dibujarContenido() {
-        this.gestionarSeleccion();
-        for (let pez of this.peces) {
-            let seleccionado = (pez === this.peces[this.indiceSeleccionado]);
-            pez.actualizar();
-            pez.dibujar(seleccionado);
-        }
+  dibujarContenido(esOscuro) {
+    this.gestionarSeleccion();
+    for (let pez of this.peces) {
+      let seleccionado = (pez === this.peces[this.indiceSeleccionado]);
+      pez.actualizar();
+      pez.dibujar(seleccionado, esOscuro);
     }
+  }
 }
 
-// Clase que estructura el comportamiento de cada pez.
-// Cada pez representa a un usuario registrado: su frase y su color
-// provienen de la tabla voces y su foto de perfil de la tabla users.
 class Pez {
-    constructor(x, y, escala, datos) {
-        //Posición actual del pez para generar el movimiento por cada frame.
-        this.x = x;
-        this.y = y;
-        this.escala = escala; //Tamaño del pez
-        // Datos del usuario que este pez representa
-        this.usuario = datos.username;
-        this.frase = datos.frase || null; // Sin voz cargada -> null
-        this.color = datos.color || null;
-        this.foto = datos.foto || null; // Ruta pública de la foto de perfil
-        // Offsets independientes para que cada pez tenga un movimiento de noise único
-        this.xOff = random(1000);
-        this.yOff = random(2000);
-        this.velocidad = 1.2; // Qué tan rápido se desplazan
-        this.angulo = 0; //Ángulo de rotación del pez
+  constructor(x, y, escala, datos) {
+    this.pos = createVector(x, y);
+    this.angulo = random(TWO_PI);
+    this.vel = p5.Vector.fromAngle(this.angulo);
+    this.acel = createVector(0, 0);
+
+    this.escala = escala;
+    this.usuario = datos.username;
+    this.frase = datos.frase || null;
+    this.color = datos.color || null;
+    this.foto = datos.foto || null;
+
+    // Parámetros de nado natural
+    this.noiseOff = random(1000);
+    this.faseAleteo = random(TWO_PI);
+    this.velocidadBase = random(0.9, 1.5);
+    this.maxFuerzaGiro = 0.04;
+  }
+
+  tieneVoz() {
+    return Boolean(this.frase);
+  }
+
+  actualizar() {
+    // 1. Giro orgánico: el ruido modifica suavemente la dirección hacia donde apunta
+    let cambioAngulo = map(noise(this.noiseOff), 0, 1, -0.14, 0.14);
+    this.angulo += cambioAngulo;
+    this.noiseOff += 0.018;
+
+    // 2. Evitación suave de bordes (dobla antes de chocar contra el vidrio)
+    let margen = 80;
+    let deseo = null;
+
+    if (this.pos.x < margen) {
+      deseo = createVector(this.velocidadBase, this.vel.y);
+    } else if (this.pos.x > width - margen) {
+      deseo = createVector(-this.velocidadBase, this.vel.y);
     }
 
-    // Un pez "tiene voz" cuando su usuario cargó su frase.
-    tieneVoz() {
-        return Boolean(this.frase);
+    if (this.pos.y < margen) {
+      deseo = createVector(deseo ? deseo.x : this.vel.x, this.velocidadBase);
+    } else if (this.pos.y > height - margen) {
+      deseo = createVector(deseo ? deseo.x : this.vel.x, -this.velocidadBase);
     }
 
-    actualizar() { //posición del pez por c/ frame
-
-        // Generamos desplazamiento suave y orgánico usando Perlin Noise
-        let vx = map(noise(this.xOff), 0, 1, -this.velocidad, this.velocidad);
-        let vy = map(noise(this.yOff), 0, 1, -this.velocidad, this.velocidad);
-        this.x += vx;
-        this.y += vy;
-        // Avanzamos en el tiempo del noise para el próximo frame
-        this.xOff += 0.008;
-        this.yOff += 0.008;
-        // Calculamos la rotación del pez según hacia dónde se está moviendo
-        this.angulo = atan2(vy, vx);
-        // Cambia su rumbo si toca el borde
-        let margen = 50; 
-        if (this.x < margen) this.x = margen; this.xOff += 10; 
-        if (this.x > width - margen) this.x = width - margen; this.xOff += 10;
-        if (this.y < margen)  this.y = margen; this.yOff += 10;
-        if (this.y > height - margen) this.y = height - margen; this.yOff += 10;
+    if (deseo !== null) {
+      deseo.normalize();
+      deseo.mult(this.velocidadBase);
+      let direccionBorde = p5.Vector.sub(deseo, this.vel);
+      direccionBorde.limit(this.maxFuerzaGiro);
+      this.acel.add(direccionBorde);
     }
 
-    dibujarFormaPez() { // Forma del pez a dibujar.
-        let s = this.escala; // Tamanio
-        ellipse(0, 0, s, s * 0.45); // Cuerpo
-        triangle(-s * 0.5, 0, -s * 0.78, -s * 0.22, -s * 0.78, s * 0.22); // Cola
-        // Ojo
+    // 3. Impulso hacia adelante según el ángulo actual + leve variación de ritmo
+    let impulso = p5.Vector.fromAngle(this.angulo);
+    let ritmoNado = this.velocidadBase + sin(this.faseAleteo) * 0.2;
+    impulso.mult(ritmoNado);
+
+    // Mezclamos suavemente la velocidad actual con el nuevo rumbo
+    this.vel.lerp(impulso, 0.18);
+    this.vel.add(this.acel);
+    this.vel.limit(this.velocidadBase * 1.3);
+
+    this.pos.add(this.vel);
+    this.acel.mult(0);
+
+    // Sincronizamos el ángulo visual con el vector real de movimiento
+    this.angulo = this.vel.heading();
+    this.faseAleteo += 0.12;
+  }
+
+  dibujarFormaPez(esOscuro, seleccionado) {
+    let s = this.escala;
+    // Movimiento sutil de la cola al nadar
+    let coleo = sin(this.faseAleteo) * (s * 0.08);
+
+    // Cuerpo
+    ellipse(0, 0, s, s * 0.44);
+
+    // Cola articulada
+    triangle(
+      -s * 0.46, 0,
+      -s * 0.78, -s * 0.22 + coleo,
+      -s * 0.78, s * 0.22 + coleo
+    );
+
+    // Ojo
+    noStroke();
+    if (this.tieneVoz() && seleccionado) {
+      fill(255);
+    } else {
+      fill(esOscuro ? 15 : 17);
+    }
+    circle(s * 0.26, -s * 0.06, s * 0.07);
+  }
+
+  dibujar(seleccionado, esOscuro) {
+    push();
+    translate(this.pos.x, this.pos.y);
+    rotate(this.angulo); // Ya está en radianes
+
+    if (this.tieneVoz() && seleccionado) {
+      fill(this.color);
+      stroke(esOscuro ? 245 : 17);
+      strokeWeight(1.8);
+    } else {
+      // Pez en reposo: blanco marfil en modo claro, translúcido/pizarra en modo oscuro
+      if (esOscuro) {
+        fill(30, 41, 59, 220);
+        stroke(148, 163, 184);
+      } else {
         fill(255);
-        noStroke();
-        circle(s * 0.25, -s * 0.07, s * 0.07);
+        stroke(17);
+      }
+      strokeWeight(1.4);
     }
 
-    dibujar(seleccionado) {
-        push();
-        translate(this.x, this.y);
-        rotate(radians(this.angulo)); //rota el pez alrededor de su propio centro
-        // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
-        // si todavía no la cargó, permanece en blanco.
-        if (this.tieneVoz() && seleccionado) fill(this.color); else fill(255);
-        stroke(0);
-        strokeWeight(2);
-        this.dibujarFormaPez();
-        pop();
-    }
+    this.dibujarFormaPez(esOscuro, seleccionado);
+    pop();
+  }
 }
