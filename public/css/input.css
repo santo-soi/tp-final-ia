@@ -89,3 +89,42 @@
       repeating-radial-gradient(circle at 50% 120%, transparent 0 38px, rgba(17, 17, 17, 0.08) 39px 40px);
   }
 }
+
+/* --------------------------------------------------- */
+/*                    MODO OSCURO                      */
+/* --------------------------------------------------- */
+.dark body { 
+    background-color: #0f172a; /* Equivalente a bg-slate-900 */
+    color: #f5f3ee; /* Equivalente a text-marfil */
+}
+.dark .btn { border-color: #f5f3ee; }
+.dark .btn:hover { background-color: #f5f3ee; color: #0f172a; }
+.dark .btn-solid { background-color: #f5f3ee; color: #0f172a; }
+.dark .btn-solid:hover { background-color: transparent; color: #f5f3ee; }
+.dark .btn-ghost { color: #94a3b8; }
+.dark .btn-ghost:hover { border-color: rgba(245, 243, 238, 0.5); color: #f5f3ee; }
+.dark .card { 
+    border-color: #1e293b; 
+    background-color: rgba(30, 41, 59, 0.7); 
+}
+.dark .input { 
+    border-color: #334155; 
+    background-color: #1e293b; 
+    color: #f5f3ee; 
+}
+.dark .input::placeholder { color: #64748b; }
+.dark .input:focus { 
+    border-color: #f5f3ee; 
+    --tw-ring-color: #f5f3ee; 
+}
+.dark .label, .dark .nav-link, .dark .eyebrow { color: #94a3b8; }
+.dark .nav-link-active, .dark .nav-link:hover { color: #f5f3ee; }
+.dark .link-underline { text-decoration-color: #475569; }
+.dark .link-underline:hover { text-decoration-color: #f5f3ee; }
+.dark .color-swatch span { border-color: rgba(255, 255, 255, 0.2); }
+.dark .fondo-ola {
+    background-image: 
+        radial-gradient(ellipse at 18% 12%, hsla(0, 0%, 100%, 0.15), transparent 55%),
+        radial-gradient(ellipse at 82% 28%, hsla(0, 0%, 100%, 0.10), transparent 50%),
+        repeating-radial-gradient(circle at 50% 120%, transparent 0 38px, hsla(0, 0%, 100%, 0.12) 39px 40px);
+}

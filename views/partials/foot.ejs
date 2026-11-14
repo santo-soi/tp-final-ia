@@ -1,8 +1,10 @@
-<footer class="mt-24 border-t border-linea bg-slate-800">
-    <div class="mx-auto grid max-w-6xl gap-10 px-6 py-12 md:grid-cols-[1.3fr_1fr_1fr]">
-        <div>
+<footer class="mt-24 bg-slate-800">
+    <!-- Bloque principal: Se redujo el padding vertical a py-8 y pb-6 para achicar el espacio inferior -->
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 py-8 pb-6 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        
+        <div class="pr-8"> 
             <p class="font-display text-2xl text-white">Océano de Voces</p>
-            <p class="mt-3 max-w-sm text-sm leading-relaxed text-gris">Un cardumen colaborativo hecho de las frases de sus usuarios. Cada voz enciende un pez.</p>
+            <p class="mt-3 text-sm leading-relaxed text-gris">Un cardumen colaborativo hecho de las frases de sus participantes. Cada voz cuenta.</p>
         </div>
 
         <div>
@@ -27,11 +29,51 @@
                 <% } %>
             </ul>
         </div>
+
+        <div>
+            <p class="eyebrow">Nosotrxs</p>
+            <ul class="mt-4 space-y-2 text-sm text-gris">
+                <li><a href="https://github.com/santo-soi" target="_blank" rel="noopener noreferrer" class="link-underline">Santo</a></li>
+                <li><a href="https://github.com/SegWayGG" target="_blank" rel="noopener noreferrer" class="link-underline">Fran</a></li>
+            </ul>
+        </div>
     </div>
 
-    <div class="border-t border-linea/70 px-6 py-5">
-        <p class="mx-auto max-w-6xl text-xs text-gris">Proyecto colaborativo · Trabajo práctico · 2026</p>
+    <!-- Barra inferior: El borde superior va de punta a punta. Se ajustó el padding vertical (py-4) -->
+    <div class="border-t border-linea/70">
+        <div class="mx-auto max-w-6xl px-6 py-4">
+            <p class="text-xs text-gris">Proyecto colaborativo · Trabajo práctico · 2026</p>
+        </div>
     </div>
 </footer>
+<script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+    // Estado inicial estricto al cargar la página
+    if (document.documentElement.classList.contains('dark')) {
+        lightIcon.classList.remove('hidden'); // Muestra el Sol
+        darkIcon.classList.add('hidden');     // Oculta la Luna
+    } else {
+        darkIcon.classList.remove('hidden');  // Muestra la Luna
+        lightIcon.classList.add('hidden');    // Oculta el Sol
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+        // Alternar la clase 'hidden' en ambos íconos simultáneamente
+        darkIcon.classList.toggle('hidden');
+        lightIcon.classList.toggle('hidden');
+
+        // Alternar modo en el HTML y guardar la preferencia del usuario
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+        }
+    });
+</script>
 </body>
 </html>

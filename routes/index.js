@@ -7,7 +7,7 @@ const router = express.Router();
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
 
 /**
- * En app.js se insertan estas rutas en '/'
+ * En app.js se insertan estas rutas en '/' 
  * con la expresión:
  *
  * app.use("/", indexRouter);
