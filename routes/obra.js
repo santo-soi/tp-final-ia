@@ -8,12 +8,13 @@ const router = express.Router();
  * Si no lo está, lo redirige al login.
  */
 function isLogged(req, res, next) {
-    if (req.session.user) {
-        next();
-    } else {
-        req.session.error = 'Para entrar al océano, primero hay que formar parte del cardumen.';
-        res.redirect('/login');
-    }
+    // if (req.session.user) {
+    //     next();
+    // } else {
+    //     req.session.error = 'Para entrar al océano, primero hay que formar parte del cardumen.';
+    //     res.redirect('/login');
+    // }
+    next();
 }
 
 /**

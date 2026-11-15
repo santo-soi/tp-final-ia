@@ -2,6 +2,7 @@ let campo;
 let cardumen;
 let contenedor;
 let timeoutVineta;
+let capaFondo;
 
 function setup() {
   // Busca el contenedor del canvas en el DOM
@@ -12,7 +13,8 @@ function setup() {
   const lienzo = createCanvas(ancho, alto); // Guarda el objeto del canvas con las medidas del <div>
   lienzo.parent("contenedor-canvas-p5"); // Inserta al canvas dentro del elemento `contenedor-canvas-p5` de la plantilla.
   // canvas secundario del mismo tamaño para acumular las olas
-  pgFondo = createGraphics(ancho, alto);
+  capaFondo = createGraphics(ancho, alto);
+  iniciarFondo();
   // Los usuarios registrados llegan desde la vista obra.ejs,
   // serializados desde la base de datos por la ruta /obra.
   const usuarios = window.usuariosObra || [];
@@ -23,12 +25,17 @@ function setup() {
  
 }
 
+function iniciarFondo() { // Cambia los colores según si está activado el modo oscuro.
+  const esOscuro = document.documentElement.classList.contains("dark");
+  if (esOscuro) capaFondo.background(15, 23, 42); // slate-900 (#0f172a) 
+  else  capaFondo.background(242, 250, 252); // Cian muy clarito, apenas separado del blanco
+}
+
 function draw() {
-  background(245, 242, 235);
-  pgFondo.background(245, 242, 235, 12);
-  campo.dibujarCampo(pgFondo);
-  image(pgFondo, 0, 0);
-  cardumen.dibujarContenido();
+  const esOscuro = document.documentElement.classList.contains("dark");
+  // campo.dibujarCampo(capaFondo, esOscuro);
+  // image(capaFondo, 0, 0);
+  cardumen.dibujarContenido(esOscuro);
 }
 
 function windowResized() {
