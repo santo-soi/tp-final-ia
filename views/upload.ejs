@@ -36,7 +36,6 @@
                         </label>
                     <% }) %>
                 </div>
-                <p class="mt-3 text-xs text-gris dark:text-slate-400">Paleta provisoria. Se puede ajustar más adelante.</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
@@ -45,7 +44,8 @@
             </div>
         </div>
 
-        <aside class="card flex flex-col justify-between bg-tinta text-marfil">
+        <aside class="card flex flex-col justify-between <%= currentUser.color ? '' : 'bg-tinta' %> text-marfil"
+            style="<%= currentUser.color ? 'background-color: ' + currentUser.color + ';' : '' %>">
             <div>
                 <p class="text-xs uppercase tracking-[0.2em] text-marfil/60">Vista previa</p>
                 <h2 class="mt-4 text-3xl">Tu pez</h2>
