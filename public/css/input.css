@@ -94,8 +94,8 @@
 /*                    MODO OSCURO                      */
 /* --------------------------------------------------- */
 .dark body { 
-    background-color: #0f172a; /* Equivalente a bg-slate-900 */
-    color: #f5f3ee; /* Equivalente a text-marfil */
+    background-color: #0f172a;
+    color: #f5f3ee;
 }
 .dark .btn { border-color: #f5f3ee; }
 .dark .btn:hover { background-color: #f5f3ee; color: #0f172a; }

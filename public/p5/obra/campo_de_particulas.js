@@ -53,12 +53,12 @@ class Particula {
         this.maxVel = 3;
         this.acel = createVector(0,0); 
         this.paleta = [
-        [6, 182, 212],   // Cian medio
-        [34, 211, 238],  // Cian claro / agua
-        [14, 165, 233],  // Celeste océano
-        [59, 130, 246],  // Azul brillante
-        [99, 102, 241],  // Índigo / violeta azulado
-        [129, 140, 248]  // Lavanda azulado suave
+        [6, 182, 212],
+        [34, 211, 238],
+        [14, 165, 233],
+        [59, 130, 246],
+        [99, 102, 241],
+        [129, 140, 248]
         ];
         this.color = random(this.paleta);
     }

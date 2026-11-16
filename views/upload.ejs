@@ -71,7 +71,7 @@
                     </div>
                 </div>
 
-                <!-- Se muestra la frase debajo del avatar con estilo modo oscuro si el usuario ya cargó una voz -->
+                <!-- Se muestra la frase debajo del avatar si el usuario ya cargó una voz -->
                 <% if (currentUser.tieneVoz) { %>
                     <p class="mt-5 rounded-2xl bg-marfil/10 px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
                 <% } %>

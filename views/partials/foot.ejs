@@ -1,5 +1,4 @@
 <footer class="mt-24 bg-slate-800">
-    <!-- Bloque principal: Se redujo el padding vertical a py-8 y pb-6 para achicar el espacio inferior -->
     <div class="mx-auto grid max-w-6xl gap-10 px-6 py-8 pb-6 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
         
         <div class="pr-8"> 
@@ -39,7 +38,6 @@
         </div>
     </div>
 
-    <!-- Barra inferior: El borde superior va de punta a punta. Se ajustó el padding vertical (py-4) -->
     <div class="border-t border-linea/70">
         <div class="mx-auto max-w-6xl px-6 py-4">
             <p class="text-xs text-gris">Proyecto colaborativo · Cátedra Samaruga · UNA Artes Multimediales 2026</p>
@@ -61,11 +59,11 @@
     }
 
     themeToggleBtn.addEventListener('click', function() {
-        // Alternar la clase 'hidden' en ambos íconos simultáneamente
+        // Alterna la clase 'hidden' en ambos íconos simultáneamente
         darkIcon.classList.toggle('hidden');
         lightIcon.classList.toggle('hidden');
 
-        // Alternar modo en el HTML y guardar la preferencia del usuario
+        // Alterna modo en el HTML y guardar la preferencia del usuario
         if (document.documentElement.classList.contains('dark')) {
             document.documentElement.classList.remove('dark');
             localStorage.setItem('color-theme', 'light');

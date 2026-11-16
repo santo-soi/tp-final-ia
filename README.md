@@ -1,6 +1,6 @@
 # Océano de Voces
 
-Sitio web artístico y colaborativo desarrollado por Juan Francisco Santillán y Santino Iosipescu como trabajo práctico integrador de la materia Informática Aplicada I, Cátedra Samaruga, de la carrera [Artes Multimediales](https://multimedia.una.edu.ar/) de la [Universidad Nacional de las Artes (UNA)](https://una.edu.ar/). 
+Sitio web artístico y colaborativo desarrollado por Francisco Santillán y Santino Iosipescu como trabajo práctico integrador de la materia Informática Aplicada I, Cátedra Samaruga, de la carrera [Artes Multimediales](https://multimedia.una.edu.ar/) de la [Universidad Nacional de las Artes (UNA)](https://una.edu.ar/). 
 
 La propuesta consiste en un espacio virtual, llamado "Océano de Voces". Allí, se despliega un campo de particulas que construirá una visual única a través de un algoritmo generativo con ruido de Perlin, y sobre el que el público podrá intervenir.
 Cada persona que se registre, creará un pez que nadará sobre ese mar de partículas. Además, podrán darles voz, cargando una frase y color desde la página "Mi Voz". Finalmente, se mostrará ese cárdumen de colaboradores que, cada 10 segundos, iluminará un pez de quien haya ingresado su voz, pintándolo del color elegido previamente y exponiendo en una viñeta junto a su foto de perfil (si la cargó), la frase que haya escrito.

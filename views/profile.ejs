@@ -32,7 +32,6 @@
                         <% if (currentUser.foto) { %>
                             <img src="<%= currentUser.foto %>" alt="Foto de perfil actual de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea dark:border-slate-700 object-cover">
                         <% } else { %>
-                            <!-- Se agregó dark:bg-slate-800 al avatar por defecto -->
                             <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea dark:border-slate-700 bg-marfil dark:bg-slate-800 font-display text-xl">
                                 <%= currentUser.username.charAt(0).toUpperCase() %>
                             </span>
@@ -75,7 +74,6 @@
                         <% if (currentUser.foto) { %>
                             <img src="<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea dark:border-slate-700 object-cover">
                         <% } else { %>
-                            <!-- Se agregó dark:bg-slate-800 al avatar por defecto -->
                             <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea dark:border-slate-700 bg-marfil text-tinta dark:text-marfil dark:bg-slate-800 font-display text-xl">
                                 <%= currentUser.username.charAt(0).toUpperCase() %>
                             </span>
@@ -84,14 +82,12 @@
                         <div>
                             <p class="text-sm font-medium">Pez pintado</p>
                             <p class="flex items-center gap-2 text-xs text-gris dark:text-slate-400">
-                                <!-- Se agregó dark:border-white/20 al círculo de color -->
                                 <span class="inline-block h-3 w-3 rounded-full border border-black/10 dark:border-white/20" style="background-color: <%= currentUser.color %>"></span>
                                 <%= currentUser.color %>
                             </p>
                         </div>
                     </div>
 
-                    <!-- Se agregó dark:bg-slate-900/50 para oscurecer la caja de la frase en modo oscuro -->
                     <p class="rounded-2xl bg-marfil text-tinta dark:text-marfil dark:bg-slate-900/50 px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
 
                     <div class="flex flex-wrap gap-3">

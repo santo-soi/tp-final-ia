@@ -15,25 +15,24 @@ const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
 const EXTENSIONES_FOTO = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 
 /**
- * En app.js se insertan estas rutas en '/user'
- * con la expresión:
+- En app.js se insertan estas rutas en '/user'
+- con la expresión:
+- app.use("/user", userRouter);
  *
- * app.use("/user", userRouter);
- *
- * Las rutas desde este archivo son relativas a
- * '/user', por lo tanto, '/' en este archivo
- * es '/user' en el servidor y '/profile' en este
- * archivo es '/user/profile' en el servidor.
- */
+- Las rutas desde este archivo son relativas a
+- '/user', por lo tanto, '/' en este archivo
+- es '/user' en el servidor y '/profile' en este
+- archivo es '/user/profile' en el servidor.
+*/
 
 
 /**
- * Middleware de enrutador
+- Middleware de enrutador
  *
- * Restringe el acceso a las páginas cuando el usuario
- * no está logueado. Se aplica en cadena en las rutas
- * que lo requieran dentro de la sección /user.
- */
+- Restringe el acceso a las páginas cuando el usuario
+- no está logueado. Se aplica en cadena en las rutas
+- que lo requieran dentro de la sección /user.
+*/
 
 function restricted(req, res, next) {
     if (req.session.user) {
@@ -48,8 +47,8 @@ router.use(restricted);
 
 
 /**
- * Página principal de usuario/a.
- */
+- Página principal de usuario/a.
+*/
 
 router.get('/', (req, res, next) => {
     res.render('user', { pageTitle: 'Mi espacio' });
@@ -57,39 +56,42 @@ router.get('/', (req, res, next) => {
 
 
 /**
- * Página de perfil de usuario/a.
- */
+- Página de perfil de usuario/a.
+*/
 
 router.get('/profile', (req, res, next) => {
     res.render('profile', { pageTitle: 'Mi perfil' });
 });
 
 /**
- * Guardado del perfil.
+- Guardado del perfil.
  *
- * El formulario es multipart/form-data porque incluye la foto
- * de perfil, así que lo procesa formidable en lugar de
- * express.urlencoded (que solo entiende formularios de texto).
- */
+- El formulario es multipart/form-data porque incluye la foto
+- de perfil, así que lo procesa formidable en lugar de
+- express.urlencoded.
+*/
 
 router.post('/profile', (req, res, next) => {
     const currentUsername = req.session.user;
+    const carpetaUploads = path.join(__dirname, '..', 'uploads');
 
-    // 1. Configuramos formidable para la foto de perfil
+    // Asegura que la carpeta uploads exista en disco antes de recibir el archivo
+    fs.mkdirSync(carpetaUploads, { recursive: true });
+
+    // Configura formidable para la foto de perfil
     const form = formidable({
-        uploadDir: 'uploads',
+        uploadDir: carpetaUploads,
         keepExtensions: true, // Conserva .jpg/.png/.webp del archivo original
         allowEmptyFiles: true, // Permite guardar el resto si no se subió foto
         minFileSize: 0,
         maxFileSize: 2 * 1024 * 1024, // 2 MB
         filter: ({ mimetype }) => {
-            // Filtramos para que solo acepte imágenes
             const tiposSoportados = new Set(['image/jpeg', 'image/png', 'image/webp']);
             return !mimetype || tiposSoportados.has(mimetype);
         }
     });
 
-    // 2. Procesamos el formulario
+    // Procesa el formulario
     form.parse(req, (err, fields, files) => {
         if (err) {
             console.error(err);
@@ -97,44 +99,44 @@ router.post('/profile', (req, res, next) => {
             return res.redirect('/user/profile');
         }
 
-        // Formidable v3 devuelve los campos y archivos como arrays
+        // Formidable devuelve los campos y archivos como arrays
         const cleanUsername = (fields.username ? fields.username[0] : '').trim();
         const currentPassword = fields.currentPassword ? fields.currentPassword[0] : '';
         const newPassword = fields.newPassword ? fields.newPassword[0] : '';
         const archivoFoto = files.foto ? files.foto[0] : null;
 
-        // Solo se procesa si efectivamente subió un archivo (y pesa más de 0 bytes)
+        // Solo se procesa si efectivamente subió un archivo
         const subioFoto = Boolean(archivoFoto && archivoFoto.size > 0);
 
-        // Si una validación falla, descartamos el archivo que formidable ya guardó
+        // Si una validación falla descarta el archivo que formidable ya guardó
         const descartarArchivoSubido = () => {
             if (subioFoto) {
                 try { fs.rmSync(archivoFoto.filepath, { force: true }); } catch { /* nada */ }
             }
         };
 
-        // 3. Validar formato del nuevo nombre de usuario
+        // Valida formato del nuevo nombre de usuario
         if (!USERNAME_REGEX.test(cleanUsername)) {
             descartarArchivoSubido();
             req.session.error = 'El usuario debe tener entre 3 y 20 caracteres: letras, números o guión bajo.';
             return res.redirect('/user/profile');
         }
 
-        // 4. Verificar si el nombre de usuario ya existe
+        // Verifica si el nombre de usuario ya existe
         if (cleanUsername !== currentUsername && db.userExists(cleanUsername)) {
             descartarArchivoSubido();
             req.session.error = 'Ese nombre de usuario ya está en uso.';
             return res.redirect('/user/profile');
         }
 
-        // 5. Validar la extensión de la foto subida
+        // Valida la extensión de la foto subida
         if (subioFoto && !EXTENSIONES_FOTO.has(path.extname(archivoFoto.filepath).toLowerCase())) {
             descartarArchivoSubido();
             req.session.error = 'La foto debe ser un archivo JPG, PNG o WebP.';
             return res.redirect('/user/profile');
         }
 
-        // 6. Validar la longitud de la nueva contraseña
+        // Valida la longitud de la nueva contraseña
         if (newPassword && newPassword.length < 6) {
             descartarArchivoSubido();
             req.session.error = 'La nueva contraseña debe tener al menos 6 caracteres.';
@@ -142,19 +144,18 @@ router.post('/profile', (req, res, next) => {
         }
 
         try {
-            // 7. Procesar el cambio de contraseña (si el usuario completó algo)
+            // Procesa el cambio de contraseña
             if (currentPassword || newPassword) {
-                // Si llenó uno pero le faltó el otro
                 if (!currentPassword || !newPassword) {
                     descartarArchivoSubido();
                     req.session.error = 'Para cambiar la contraseña, tenés que completar tanto la actual como la nueva.';
                     return res.redirect('/user/profile');
                 }
 
-                // Obtenemos la contraseña encriptada actual de la base de datos
+                // Obtiene la contraseña encriptada actual de la base de datos
                 const currentHash = db.getHash(currentUsername);
 
-                // Comparamos lo que ingresó con lo que está guardado
+                // Compara lo que ingresó con lo que está guardado
                 const match = bcrypt.compareSync(currentPassword, currentHash);
                 if (!match) {
                     descartarArchivoSubido();
@@ -163,30 +164,30 @@ router.post('/profile', (req, res, next) => {
                 }
             }
 
-            // 8. Guardar la foto de perfil nueva (si subió una)
+            // Guarda la foto de perfil nueva (si subió una)
             if (subioFoto) {
                 const usuarioActual = db.getUser(currentUsername);
                 const fotoVieja = usuarioActual ? usuarioActual.foto : null;
 
-                // Guardamos la ruta pública del archivo subido en la tabla users
+                // Guarda la ruta pública del archivo subido en la tabla users
                 db.updateFoto(currentUsername, '/uploads/' + archivoFoto.newFilename);
 
-                // Borramos del disco la foto anterior para no acumular archivos
+                // Borra del disco la foto anterior para no acumular archivos
                 if (fotoVieja) {
-                    try { fs.rmSync(path.join('uploads', path.basename(fotoVieja)), { force: true }); } catch { /* nada */ }
+                    try { fs.rmSync(path.join(carpetaUploads, path.basename(fotoVieja)), { force: true }); } catch { /* nada */ }
                 }
             }
 
-            // 9. Si la contraseña se validó bien, la encriptamos y la guardamos
+            // Si la contraseña se validó bien, la encriptam y la guarda
             if (currentPassword && newPassword) {
                 const newHash = bcrypt.hashSync(newPassword, 10);
                 db.updatePassword(currentUsername, newHash);
             }
 
-            // 10. Actualizamos el nombre de usuario (cambie o no)
+            // Actualiza el nombre de usuario
             if (cleanUsername !== currentUsername) {
                 db.updateUsername(currentUsername, cleanUsername);
-                req.session.user = cleanUsername; // Actualizamos la sesión para no desloguearlo
+                req.session.user = cleanUsername; // Actualiza la sesión para no desloguearlo
             }
 
             req.session.success = subioFoto
@@ -204,12 +205,12 @@ router.post('/profile', (req, res, next) => {
 
 
 /**
- * Carga de la voz.
+- Carga de la voz.
  *
- * El formulario es urlencoded (solo texto: frase y color), así que
- * los datos llegan en req.body gracias a express.urlencoded.
- * La foto de perfil se administra desde /user/profile.
- */
+- El formulario es urlencoded (solo texto: frase y color), así que
+- los datos llegan en req.body gracias a express.urlencoded.
+- La foto de perfil se administra desde /user/profile.
+*/
 
 router.get('/upload', (req, res, next) => {
     res.render('upload', {
@@ -224,7 +225,7 @@ router.post('/upload', (req, res, next) => {
     const frase = (req.body.frase || '').trim();
     const color = (req.body.color || '').trim();
 
-    // 1. Validar la frase
+    // Valida la frase
     if (!frase) {
         req.session.error = 'Escribí una frase para tu voz.';
         return res.redirect('/user/upload');
@@ -235,14 +236,14 @@ router.post('/upload', (req, res, next) => {
         return res.redirect('/user/upload');
     }
 
-    // 2. Validar que el color pertenezca a la paleta de la obra
+    // Valida que el color pertenezca a la paleta de la obra
     if (!paleta.some((opcion) => opcion.hex === color)) {
         req.session.error = 'Elegí un color de la paleta para tu pez.';
         return res.redirect('/user/upload');
     }
 
     try {
-        // 3. Guardamos la voz del usuario logueado
+        // Guarda la voz del usuario logueado
         db.upsertVoz({ username, frase, color });
 
         req.session.success = '¡Tu voz fue cargada con éxito! Ya estás nadando en el cardumen.';
@@ -257,8 +258,8 @@ router.post('/upload', (req, res, next) => {
 
 
 /**
- * Borrado de la voz.
- */
+- Borrado de la voz.
+*/
 router.post('/profile/delete-voz', (req, res, next) => {
     db.deleteVoz(req.session.user);
     req.session.success = 'Tu voz fue eliminada. Tu pez vuelve a quedar blanco.';
@@ -267,8 +268,8 @@ router.post('/profile/delete-voz', (req, res, next) => {
 
 
 /**
- * Logout
- */
+- Logout
+*/
 
 router.get('/logout', (req, res, next) => {
     // Destruye los datos de la sesión y redirige a la página principal.

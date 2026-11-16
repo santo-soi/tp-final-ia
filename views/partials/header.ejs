@@ -3,19 +3,12 @@
         
         <div class="flex items-center gap-3 md:ml-16">
             <!-- Bloque Izquierdo: Logo -->
-            <% if (currentUser) { %>
-            <a href="/user" >
-            <% } else { %>
-            <a href="/" >
-            <% } %>
+            <a href="/">
                 <span class="flex h-8 w-8 items-center justify-center rounded-full border border-tinta dark:border-marfil">
                     <span class="block h-3 w-3 rounded-full bg-tinta dark:bg-marfil"></span>
                 </span>
-            
             </a>
         </div>
-       
-            
 
         <!-- Bloque Derecho: Navegación + Botón -->
         <div class="flex items-center gap-4 md:gap-8">
@@ -26,8 +19,7 @@
                 <a href="/about" class="nav-link <%= currentPath.startsWith('/about') ? 'nav-link-active' : '' %>">Bio</a>
                 
                 <% if (currentUser) { %>
-                    <a href="/user/upload" class="nav-link <%= currentPath.startsWith('/user/upload') ? 'nav-link-active' : '' %>">Mi voz</a>
-                    <a href="/user/profile" class="nav-link <%= currentPath.startsWith('/user/profile') ? 'nav-link-active' : '' %>">Perfil</a>
+                    <a href="/user" class="nav-link <%= currentPath === '/user' ? 'nav-link-active' : '' %>">Mi espacio</a>
                     <a href="/user/logout" class="btn btn-ghost !px-4 !py-2 dark:border-marfil/50 dark:hover:bg-marfil/10">Salir</a>
                 <% } else { %>
                     <a href="/login" class="nav-link <%= currentPath.startsWith('/login') ? 'nav-link-active' : '' %>">Ingresar</a>
@@ -42,18 +34,16 @@
                     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                 </svg>
                 <!-- Ícono de Sol (Modo oscuro) - oculto por defecto -->
-                <!-- Ícono de Sol (Modo oscuro) - oculto por defecto -->
                 <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM10 15a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 15zM10 7a3 3 0 100 6 3 3 0 000-6zM15.657 5.404a.75.75 0 10-1.06-1.06l-1.061 1.06a.75.75 0 001.06 1.06l1.06-1.06zM6.464 14.596a.75.75 0 10-1.06-1.06l-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0118 10zM5 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 015 10zM14.596 15.657a.75.75 0 001.06-1.06l-1.06-1.061a.75.75 0 10-1.06 1.06l1.06 1.06zM5.404 6.464a.75.75 0 001.06-1.06l-1.06-1.06a.75.75 0 10-1.06 1.061l1.06 1.06z" />
                 </svg>
             </button>
 
-            <!-- Navegación de Celulares  -->
+            <!-- Navegación de Celulares -->
             <nav class="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 md:hidden dark:text-marfil">
                 <a href="/obra" class="nav-link">Obra</a>
                 <% if (currentUser) { %>
                     <a href="/user" class="nav-link">Mi espacio</a>
-                    <a href="/user/upload" class="nav-link">Mi voz</a>
                     <a href="/user/logout" class="nav-link">Salir</a>
                 <% } else { %>
                     <a href="/login" class="nav-link">Ingresar</a>

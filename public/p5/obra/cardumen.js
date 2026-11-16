@@ -1,6 +1,5 @@
 class Cardumen {
-    // Recibe los usuarios registrados que llegan desde la base de datos
-    // (una fila por usuario de la tabla users) y crea un pez por cada uno.
+    // Recibe los usuarios registrados que llegan desde la base de datos y crea un pez por cada uno.
     // Si no hay usuarios, no se dibuja ningún pez.
     constructor(usuarios) {
         this.peces = []; // Array donde se guardarán los peces
@@ -9,11 +8,10 @@ class Cardumen {
         this.crearPeces(usuarios);
     }
 
-    // -------------------------------------------------------Desarrollo del contenido que será mostrado en pantalla
 
     // Crea los peces del cardumen y los guarda en el array `this.peces`.
     crearPeces(usuarios = []) {
-        this.peces = []; // Limpiamos por si se re-ejecuta
+        this.peces = []; // Limpia por si se re-ejecuta
 
         for (let i = 0; i < usuarios.length; i++) {
             let x = random(80, width - 80);
@@ -39,7 +37,6 @@ class Cardumen {
         return null;
     }
 
-    // -------------------------------------------------------Lo que será mostrado en pantalla
     // Recorre `this.peces` para actualizar y dibujar cada pez.
     dibujarContenido(esOscuro) {
         this.gestionarSeleccion();
@@ -57,7 +54,7 @@ class Cardumen {
 class Pez {
     constructor(x, y, escala, datos) {
         //config inicial del pez
-        this.pos =  createVector(x, y); //Posición og en el canvas
+        this.pos = createVector(x, y); //Posición og en el canvas
         this.angulo = random(TWO_PI); //Se le da una dirección por default en base a un ángulo random
         this.escala = escala; //Tamaño del pez
         
@@ -74,7 +71,6 @@ class Pez {
         this.vel = p5.Vector.fromAngle(this.angulo); // Velocidad que se le irá dándo según la dirección del pez.
         this.acel = createVector(0, 0); // Aceleración al chocar con bordes.
         this.maxFuerzaGiro = 0.04; //Aceleración máxima al girar con los bordes.
-        
     }
 
     // Evaluá si el usuario cargó la voz.
@@ -96,23 +92,23 @@ class Pez {
 
         //En eje x
         if (this.pos.x < margen) {
-        deseo = createVector(this.velocidadBase, this.vel.y);
+            deseo = createVector(this.velocidadBase, this.vel.y);
         } else if (this.pos.x > width - margen) {
-        deseo = createVector(-this.velocidadBase, this.vel.y);
+            deseo = createVector(-this.velocidadBase, this.vel.y);
         }
         //En eje y
         if (this.pos.y < margen) {
-        deseo = createVector(deseo ? deseo.x : this.vel.x, this.velocidadBase);
+            deseo = createVector(deseo ? deseo.x : this.vel.x, this.velocidadBase);
         } else if (this.pos.y > height - margen) {
-        deseo = createVector(deseo ? deseo.x : this.vel.x, -this.velocidadBase);
+            deseo = createVector(deseo ? deseo.x : this.vel.x, -this.velocidadBase);
         }
 
         if (deseo !== null) {
-        // Calcula la resta de la velocidad necesaria para alcanzar el punto
-        // a donde se dirigirá luego de colisionar con los bordes.
-        let direccionBorde = p5.Vector.sub(deseo, this.vel); 
-        direccionBorde.limit(this.maxFuerzaGiro); //no superará el valor de la fuerza máxima indicada en el constructor.
-        this.acel.add(direccionBorde); 
+            // Calcula la resta de la velocidad necesaria para alcanzar el punto
+            // a donde se dirigirá luego de colisionar con los bordes.
+            let direccionBorde = p5.Vector.sub(deseo, this.vel); 
+            direccionBorde.limit(this.maxFuerzaGiro); //no superará el valor de la fuerza máxima indicada en el constructor.
+            this.acel.add(direccionBorde); 
         }
 
         // 3. Impulso hacia adelante según el ángulo actual + leve variación de ritmo.
@@ -127,70 +123,49 @@ class Pez {
         this.pos.add(this.vel);
         this.acel.mult(0); // Reinicia la acelaración para la próxima colisión.
 
-        // Rotamos la dirección del pez en base con el vector de velocidad calculado.
+        // Rota la dirección del pez en base con el vector de velocidad calculado.
         this.angulo = this.vel.heading();
         this.faseAleteo += 0.12;
-    
-
     }
 
     dibujarFormaPez(seleccionado, esOscuro) { // Forma del pez a dibujar.
-        let s = this.escala; // Tamanio.
+        let s = this.escala; // Tamaño.
         let coleo = sin(this.faseAleteo) * (s * 0.08); // Movimiento sutil de la cola al nadar.
         triangle(-s * 0.46, 0, -s * 0.78, -s * 0.22 + coleo, -s * 0.78, s * 0.22 + coleo);  // Cola articulada.
         ellipse(0, 0, s, s * 0.45); // Cuerpo.
 
-         // Ojo.
+        // Ojo.
         noStroke();
         if (this.tieneVoz() && seleccionado) {
-        fill(255);
+            fill(255);
         } else {
-        fill(esOscuro ? 15 : 17);
+            fill(esOscuro ? 15 : 17);
         }
         circle(s * 0.26, -s * 0.06, s * 0.07);
-    }
-
-    // Manipula el HTML de la viñeta.
-    mostrarVineta() {
-            let divVineta = document.getElementById("vineta-frase");
-            let imgFoto = document.getElementById("vineta-foto");
-            let spanUsuario = document.getElementById("vineta-usuario");
-            let pTexto = document.getElementById("vineta-texto");
-            // Inyecta los datos del pez activo.
-            spanUsuario.textContent = this.usuario;
-            pTexto.textContent = `“${this.frase}”`;
-            // Muestra la foto de perfil si el usuario la subió.
-            if (this.foto) {
-            imgFoto.src = this.foto;
-            imgFoto.alt = `Foto de perfil de ${this.usuario}`;
-            imgFoto.classList.remove("hidden");
-            } else {
-            imgFoto.removeAttribute("src");
-            imgFoto.alt = "";
-            imgFoto.classList.add("hidden");
-            }
-            // Muestra la viñeta agregando la clase de opacidad
-            divVineta.classList.remove("opacity-0");
-            divVineta.classList.add("opacity-100");
-            // Se desvanece automáticamente después de 6 segundos.
-            // Si hay un clic nuevo antes, se reinicia el conteo.
-            clearTimeout(timeoutVineta);
-            timeoutVineta = setTimeout(() => {
-            divVineta.classList.remove("opacity-100");
-            divVineta.classList.add("opacity-0");
-            }, 6000);
     }
 
     dibujar(seleccionado, esOscuro) {
         push();
         translate(this.pos.x, this.pos.y);
         rotate(this.angulo); // Rota el pez alrededor de su propio centro.
-        // Pez en reposo: blanco marfil en modo claro, translúcido/pizarra en modo oscuro
-        if (esOscuro) { fill(30, 41, 59, 220); stroke(148, 163, 184);} 
-        else { fill(255); stroke(17);}
+
         // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
-        if (this.tieneVoz() && seleccionado) {fill(this.color); this.mostrarVineta()} else fill(255);
-        strokeWeight(1.4);
+        if (this.tieneVoz() && seleccionado) {
+            fill(this.color);
+            stroke(esOscuro ? 245 : 17);
+            strokeWeight(1.8);
+        } else {
+            // Pez en reposo: blanco marfil en modo claro, translúcido en modo oscuro
+            if (esOscuro) {
+                fill(30, 41, 59, 220);
+                stroke(148, 163, 184);
+            } else {
+                fill(255);
+                stroke(17);
+            }
+            strokeWeight(1.4);
+        }
+
         this.dibujarFormaPez(seleccionado, esOscuro);
         pop();
     }

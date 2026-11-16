@@ -1,6 +1,6 @@
 /**
- * Este es el archivo principal de la aplicación servidor.
- */
+ * Archivo principal de la aplicación servidor.
+*/
 
 // Imports de commonjs.
 const path = require('path');
@@ -24,7 +24,7 @@ const app = express();
 
 /**
  * Configuración de los valores de la aplicación.
- */
+*/
 
 app.set('port', PORT);
 app.set('views', path.join(__dirname, 'views'));
@@ -33,7 +33,7 @@ app.disable('x-powered-by');
 
 /**
  * Configuración del middleware.
- */
+*/
 
 // Procesa los datos de las peticiones POST y los pone disponibles en `req.body`.
 app.use(express.urlencoded({ extended: true }));
@@ -82,7 +82,7 @@ app.use((req, res, next) => {
 
 /**
  * Configuración de los enrutadores.
- */
+*/
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
@@ -91,7 +91,7 @@ app.use('/obra', obraRouter);
 
 /**
  * Manejo de rutas no encontradas y errores.
- */
+*/
 
 app.use((req, res) => {
     res.status(404).render('404', { pageTitle: 'Página no encontrada' });
@@ -112,7 +112,7 @@ app.use((err, req, res, next) => {
 
 /**
  * Inicialización de la aplicación servidor.
- */
+*/
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

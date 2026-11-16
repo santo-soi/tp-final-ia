@@ -13,8 +13,7 @@ const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
  * app.use("/", indexRouter);
  *
  * En este caso, las rutas de este archivo son
- * relativas a la ruta raíz, ver el caso de user.js
- * que es distinto.
+ * relativas a la ruta raíz.
  */
 
 
@@ -25,8 +24,8 @@ router.get('/', (req, res, next) => {
 
 
 /**
- * About
- */
+* About
+*/
 
 router.get('/about', (req, res, next) => {
     // Información sobre el sitio.
@@ -35,10 +34,10 @@ router.get('/about', (req, res, next) => {
 
 
 /**
- * Middleware para login y signup con get y post.
- * Comprueba que el usuario no esté logueado para poder
- * acceder a las rutas.
- */
+* Middleware para login y signup con get y post.
+* Comprueba que el usuario no esté logueado para poder
+* acceder a las rutas.
+*/
 function notlogged(req, res, next) {
     // Si el usuario no está logueado, continúa.
     if (!req.session.user) {
@@ -50,8 +49,8 @@ function notlogged(req, res, next) {
 
 
 /**
- * Signup
- */
+* Signup
+*/
 
 router.get('/signup', notlogged, (req, res, next) => {
     // Enviar el formulario.
@@ -97,8 +96,8 @@ router.post('/signup', notlogged, (req, res, next) => {
 
 
 /**
- * Login
- */
+* Login
+*/
 
 function authenticate(username, password) {
     if (!db.userExists(username)) return false;

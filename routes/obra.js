@@ -4,16 +4,11 @@ const db = require('../database/db.js');
 const router = express.Router();
 
 /**
- * Middleware para comprobar que el usuario esté logueado.
- * Si no lo está, lo redirige al login.
- */
-
-/**
- * En app.js se inserta este enrutador en '/obra'.
- *
- * GET /obra      -> página de la obra.
- * GET /obra/data -> datos JSON para el sketch de p5.js.
- */
+* En app.js se inserta este enrutador en '/obra'.
+*
+* GET /obra      -> página de la obra.
+* GET /obra/data -> datos JSON para el sketch de p5.js.
+*/
 
 router.get('/', (req, res, next) => {
     // Los usuarios registrados se envían a la vista y de ahí al sketch de p5.js.
