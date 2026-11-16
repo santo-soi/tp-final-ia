@@ -15,7 +15,7 @@
         <section class="card">
             <h2 class="text-2xl">Cuenta</h2>
             <p class="mt-2 text-sm leading-relaxed text-gris dark:text-slate-400">
-                Tu nombre de usuario es el que se ve en la obra. Podés cambiarlo cuando quieras.
+                Tu nombre de usuario es el que se ve en la obra. Podés cambiarlo cuándo quieras.
             </p>
 
             <form action="/user/profile" method="POST" enctype="multipart/form-data" class="mt-6 space-y-5">
@@ -65,7 +65,8 @@
             </form>
         </section>
 
-        <section class="card">
+        <section class="card <%= currentUser.color ? '' : 'bg-tinta' %> text-marfil"
+            style="<%= currentUser.color ? 'background-color: ' + currentUser.color + ';' : '' %>">
             <h2 class="text-2xl">Mi voz</h2>
 
             <% if (currentUser.tieneVoz) { %>
@@ -75,7 +76,7 @@
                             <img src="<%= currentUser.foto %>" alt="Foto de perfil de <%= currentUser.username %>" class="h-14 w-14 rounded-full border border-linea dark:border-slate-700 object-cover">
                         <% } else { %>
                             <!-- Se agregó dark:bg-slate-800 al avatar por defecto -->
-                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea dark:border-slate-700 bg-marfil dark:bg-slate-800 font-display text-xl">
+                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-linea dark:border-slate-700 bg-marfil text-tinta dark:text-marfil dark:bg-slate-800 font-display text-xl">
                                 <%= currentUser.username.charAt(0).toUpperCase() %>
                             </span>
                         <% } %>
@@ -91,7 +92,7 @@
                     </div>
 
                     <!-- Se agregó dark:bg-slate-900/50 para oscurecer la caja de la frase en modo oscuro -->
-                    <p class="rounded-2xl bg-marfil dark:bg-slate-900/50 px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
+                    <p class="rounded-2xl bg-marfil text-tinta dark:text-marfil dark:bg-slate-900/50 px-4 py-4 font-display text-xl leading-snug">“<%= currentUser.frase %>”</p>
 
                     <div class="flex flex-wrap gap-3">
                         <a href="/user/upload" class="btn">Editar mi voz</a>

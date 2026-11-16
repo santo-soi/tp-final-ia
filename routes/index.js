@@ -123,7 +123,7 @@ router.post('/login', notlogged, (req, res, next) => {
 
     req.session.regenerate(() => {
         req.session.user = cleanUsername;
-        req.session.success = `Bienvenide, ${cleanUsername}.`;
+        req.session.success = `Bienvenid@, ${cleanUsername}.`;
         res.redirect('/user');
     });
 });

@@ -7,14 +7,6 @@ const router = express.Router();
  * Middleware para comprobar que el usuario esté logueado.
  * Si no lo está, lo redirige al login.
  */
-function isLogged(req, res, next) {
-    if (req.session.user) {
-        next();
-    } else {
-        req.session.error = 'Para entrar al océano, primero hay que formar parte del cardumen.';
-        res.redirect('/login');
-    }
-}
 
 /**
  * En app.js se inserta este enrutador en '/obra'.
@@ -23,8 +15,7 @@ function isLogged(req, res, next) {
  * GET /obra/data -> datos JSON para el sketch de p5.js.
  */
 
-// Agregamos isLogged como segundo parámetro en ambas rutas
-router.get('/', isLogged, (req, res, next) => {
+router.get('/', (req, res, next) => {
     // Los usuarios registrados se envían a la vista y de ahí al sketch de p5.js.
     const usuarios = db.getSketchData();
 
@@ -35,7 +26,7 @@ router.get('/', isLogged, (req, res, next) => {
     res.render('obra', { pageTitle: 'La obra', usuariosObra });
 });
 
-router.get('/data', isLogged, (req, res, next) => {
+router.get('/data', (req, res, next) => {
     const data = db.getSketchData();
     res.set('Cache-Control', 'no-store');
     res.json(data);

@@ -42,7 +42,7 @@
     <!-- Barra inferior: El borde superior va de punta a punta. Se ajustó el padding vertical (py-4) -->
     <div class="border-t border-linea/70">
         <div class="mx-auto max-w-6xl px-6 py-4">
-            <p class="text-xs text-gris">Proyecto colaborativo · Trabajo práctico · 2026</p>
+            <p class="text-xs text-gris">Proyecto colaborativo · Cátedra Samaruga · UNA Artes Multimediales 2026</p>
         </div>
     </div>
 </footer>
@@ -75,5 +75,13 @@
         }
     });
 </script>
+<script>
+        // Verifica si hay un tema guardado o si el sistema operativo está en oscuro
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </body>
 </html>

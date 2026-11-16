@@ -185,17 +185,11 @@ class Pez {
         push();
         translate(this.pos.x, this.pos.y);
         rotate(this.angulo); // Rota el pez alrededor de su propio centro.
-        // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
-        // si todavía no la cargó, permanece en blanco.
-        if (this.tieneVoz() && seleccionado) {fill(this.color); this.mostrarVineta()} else fill(255);
         // Pez en reposo: blanco marfil en modo claro, translúcido/pizarra en modo oscuro
-        if (esOscuro) {
-            fill(30, 41, 59, 220);
-            stroke(148, 163, 184);
-        } else {
-            fill(255);
-            stroke(17);
-        }
+        if (esOscuro) { fill(30, 41, 59, 220); stroke(148, 163, 184);} 
+        else { fill(255); stroke(17);}
+        // Si el usuario cargó su voz, el pez se pinta con el color que eligió;
+        if (this.tieneVoz() && seleccionado) {fill(this.color); this.mostrarVineta()} else fill(255);
         strokeWeight(1.4);
         this.dibujarFormaPez(seleccionado, esOscuro);
         pop();

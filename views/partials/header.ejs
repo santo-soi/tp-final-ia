@@ -27,6 +27,7 @@
                 
                 <% if (currentUser) { %>
                     <a href="/user/upload" class="nav-link <%= currentPath.startsWith('/user/upload') ? 'nav-link-active' : '' %>">Mi voz</a>
+                    <a href="/user/profile" class="nav-link <%= currentPath.startsWith('/user/profile') ? 'nav-link-active' : '' %>">Perfil</a>
                     <a href="/user/logout" class="btn btn-ghost !px-4 !py-2 dark:border-marfil/50 dark:hover:bg-marfil/10">Salir</a>
                 <% } else { %>
                     <a href="/login" class="nav-link <%= currentPath.startsWith('/login') ? 'nav-link-active' : '' %>">Ingresar</a>

@@ -100,9 +100,9 @@
 .dark .btn { border-color: #f5f3ee; }
 .dark .btn:hover { background-color: #f5f3ee; color: #0f172a; }
 .dark .btn-solid { background-color: #f5f3ee; color: #0f172a; }
-.dark .btn-solid:hover { background-color: transparent; color: #f5f3ee; }
-.dark .btn-ghost { color: #94a3b8; }
-.dark .btn-ghost:hover { border-color: rgba(245, 243, 238, 0.5); color: #f5f3ee; }
+.dark .btn-solid:hover { background-color: transparent; }
+.dark .btn-ghost {color: #94a3b8; border-color: transparent}
+.dark .btn-ghost:hover { border-color: rgba(245, 243, 238, 0.5); color: #0f172a;}
 .dark .card { 
     border-color: #1e293b; 
     background-color: rgba(30, 41, 59, 0.7); 

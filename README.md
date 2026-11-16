@@ -1,17 +1,19 @@
 # Océano de Voces
 
-Sitio web artístico colaborativo para el trabajo práctico de la facultad. Cada persona registrada tiene un pez dentro de un cardumen; cuando carga su voz (frase y color), su pez se pinta y, al hacer clic en el océano, su voz se muestra en una viñeta junto a su foto de perfil.
+Sitio web artístico y colaborativo desarrollado por Juan Francisco Santillán y Santino Iosipescu como trabajo práctico integrador de la materia Informática Aplicada I, Cátedra Samaruga, de la carrera [Artes Multimediales](https://multimedia.una.edu.ar/) de la [Universidad Nacional de las Artes (UNA)](https://una.edu.ar/). 
 
-## Estado actual
+La propuesta consiste en un espacio virtual, llamado "Océano de Voces". Allí, se despliega un campo de particulas que construirá una visual única a través de un algoritmo generativo con ruido de Perlin, y sobre el que el público podrá intervenir.
+Cada persona que se registre, creará un pez que nadará sobre ese mar de partículas. Además, podrán darles voz, cargando una frase y color desde la página "Mi Voz". Finalmente, se mostrará ese cárdumen de colaboradores que, cada 10 segundos, iluminará un pez de quien haya ingresado su voz, pintándolo del color elegido previamente y exponiendo en una viñeta junto a su foto de perfil (si la cargó), la frase que haya escrito.
 
-La **estructura de navegación, los endpoints y el estilo base con Tailwind CSS** están funcionando, al igual que el login, el registro y la edición de usuario, contraseña y foto de perfil (`/user/profile`). La carga de la voz (`/user/upload`) guarda frase y color. La obra (`/obra`) genera un pez por cada usuario registrado en el sketch de p5.js.
+## Información técnica para correr el sitio
 
-## Requisitos
+### Requisitos
 
 - Node.js 18 o superior.
 - npm.
+- Tailwindcss.
 
-## Instalación y ejecución
+### Instalación y ejecución
 
 ```bash
 npm install
@@ -33,7 +35,7 @@ Para recompilar Tailwind mientras se editan las vistas:
 npm run watch:css
 ```
 
-## Scripts
+### Scripts
 
 | Script | Función |
 |---|---|
@@ -42,14 +44,14 @@ npm run watch:css
 | `npm run build:css` | Genera `public/css/style.css` en modo minificado. |
 | `npm run watch:css` | Recompila Tailwind al detectar cambios. |
 
-## Mapa de navegación
+### Mapa de navegación
 
-### Públicas
+#### Públicas
 
 | Método | Ruta | Función |
 |---|---|---|
 | GET | `/` | Portada con descripción, accesos a login, registro y obra. |
-| GET | `/about` | Información del proyecto y decisiones. |
+| GET | `/about` | Información del proyecto. |
 | GET | `/signup` | Formulario de registro. |
 | POST | `/signup` | Crea la cuenta y redirige al login. |
 | GET | `/login` | Formulario de ingreso. |
@@ -57,7 +59,7 @@ npm run watch:css
 | GET | `/obra` | Página de la obra con el sketch de p5.js (un pez por usuario). |
 | GET | `/obra/data` | JSON con todos los usuarios registrados y sus voces. |
 
-### Privadas (`/user`, requieren sesión)
+#### Privadas (`/user`, requieren sesión)
 
 | Método | Ruta | Función |
 |---|---|---|
@@ -69,16 +71,16 @@ npm run watch:css
 | POST | `/user/profile/delete-voz` | Borra la voz del usuario. |
 | GET | `/user/logout` | Cierra la sesión. |
 
-## Navegación
+### Navegación
 
 Todas las páginas comparten un header y un footer con enlaces. El header cambia según la sesión:
 
-- **Visitante:** La obra · El proyecto · Ingresar · Registrarme.
-- **Usuario logueado:** La obra · El proyecto · Mi espacio · Mi voz · Perfil · Salir.
+- **Visitante:** El Océano · Bio · Ingresar · Registrarme.
+- **Usuario logueado:** El Oceáno · Bio · Mi voz · Perfil · Salir.
 
 Las páginas privadas tienen un enlace “← Volver a mi espacio”. La portada, el login y el registro enlazan entre sí, y la obra se puede alcanzar desde la portada, el índice de usuario y el footer.
 
-## Estructura
+### Estructura
 
 ```
 app.js
@@ -124,8 +126,8 @@ tailwind.config.js
 - Una frase de hasta 180 caracteres y un color de la paleta (`config/palette.js`).
 - El pez se pinta con el color elegido si el usuario cargó su voz; si no, permanece blanco.
 - La obra es pública; para cargar o editar la voz hay que iniciar sesión.
-- Al hacer clic en el canvas, la voz del pez con voz más cercano se muestra en una viñeta (`vineta-frase`) durante 6 segundos.
+- Cada 10 segundos, se elegirá aleatoriamente la voz de un usuario, pintando su pez del color elegido y mostrándola en una viñeta (`vineta-frase`) durante 6 segundos.
 
 ## Rama de trabajo
 
-El desarrollo de esta etapa está en la rama `estructura-navegacion`.
+Fuimos trabajando en distintas ramas sin un criterio específico para, a medido que avanzabamos, juntar los cambios en main.
